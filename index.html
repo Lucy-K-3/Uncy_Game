@@ -92,8 +92,46 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding: 32px 0 16px;
+    gap: 16px;
+    padding: 24px 0 16px;
+  }
+
+  .packs-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pack-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .special-pack {
+    background: linear-gradient(160deg, #200030 0%, #500080 50%, #180022 100%) !important;
+    border-color: #c080f8 !important;
+    box-shadow: 0 0 30px rgba(160,80,240,0.35) !important;
+  }
+
+  .special-pack .pack-logo { color: #c080f8; }
+  .special-pack .pack-edition { color: rgba(192,128,248,0.7); }
+
+  .special-pull-btn {
+    background: linear-gradient(135deg, #c080f8, #7030c0) !important;
+    box-shadow: 0 4px 16px rgba(160,80,240,0.4) !important;
+  }
+
+  .special-pull-btn:hover { background: linear-gradient(135deg, #d090ff, #8040d0) !important; }
+  .special-pull-btn:disabled { opacity: 0.35 !important; }
+
+  .special-cooldown {
+    font-size: 11px;
+    color: #a060d0;
+    min-height: 16px;
+    text-align: center;
   }
 
   .pack-visual {
@@ -205,7 +243,7 @@
 
   /* Outer frame */
   .card {
-    width: 190px;
+    width: 155px;
     flex-shrink: 0;
     border-radius: 12px;
     padding: 5px;
@@ -224,20 +262,48 @@
     to   { opacity: 1; transform: perspective(600px) rotateY(0deg) scale(1); }
   }
 
-  /* Metallic sheen overlay — moves with mouse via JS */
+  /* Chrome metallic sheen — two layers: base shine + moving specular */
   .card::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 12px;
     pointer-events: none;
-    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.22) 0%, transparent 65%);
-    opacity: 0;
-    transition: opacity 0.2s;
     z-index: 3;
+    /* Sharp chrome bands that shift with mouse */
+    background:
+      radial-gradient(ellipse 80% 60% at var(--mx,50%) var(--my,50%),
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.15) 25%,
+        transparent 55%),
+      linear-gradient(
+        calc(var(--angle, 135deg)),
+        transparent 20%,
+        rgba(255,255,255,0.08) 35%,
+        rgba(255,255,255,0.25) 45%,
+        rgba(255,255,255,0.08) 55%,
+        transparent 70%
+      );
+    opacity: 0;
+    transition: opacity 0.15s;
+    mix-blend-mode: screen;
   }
 
   .card:hover::after { opacity: 1; }
+
+  /* UR ribbon animation */
+  @keyframes ribbon-sweep {
+    0%   { transform: translateX(-120%) rotate(-25deg); opacity: 0; }
+    10%  { opacity: 1; }
+    80%  { opacity: 0.8; }
+    100% { transform: translateX(220%) rotate(-25deg); opacity: 0; }
+  }
+
+  @keyframes ur-fade-out {
+    0%   { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
 
   /* Rarity gradients — metallic style */
   .card.rarity-C {
@@ -317,7 +383,7 @@
   /* Image area — FIXED height, image always fills it */
   .card-image {
     width: 100%;
-    height: 115px;
+    height: 95px;
     background: #1a1610;
     overflow: hidden;
     display: flex;
@@ -342,10 +408,10 @@
     line-height: 1.45;
     color: #b0a890;
     background: rgba(20,16,8,0.95);
-    height: 56px;
+    height: 48px;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
   }
 
@@ -532,13 +598,15 @@
   /* ── DECK GRID ── */
   .deck-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
     gap: 16px;
     justify-items: center;
   }
 
   /* Collection cards are the same .card style — just no animation on load */
-  .deck-grid .card { animation: none; width: 100%; max-width: 220px; }
+  .deck-grid .card { animation: none; width: 100%; max-width: 185px; }
+  /* Prevent the anchor inside a collection wrapper from navigating */
+  .deck-grid div > a.card { pointer-events: none; }
 
   /* ── MODAL ── */
   .modal-backdrop {
@@ -786,16 +854,34 @@
   <!-- PULL -->
   <div id="screen-gacha" class="screen active">
     <div class="pack-area">
-      <div class="pack-visual" onclick="openPack()">
-        <div class="shimmer"></div>
-        <div class="pack-icon">📖</div>
-        <div class="pack-logo">Uncyclopedia<br>Standard Pack</div>
-        <div class="pack-edition">5 cards per pull</div>
+      <div class="packs-row">
+        <div class="pack-wrap">
+          <div class="pack-visual" onclick="openPack('normal')">
+            <div class="shimmer"></div>
+            <div class="pack-icon">📖</div>
+            <div class="pack-logo">Uncyclopedia<br>Standard Pack</div>
+            <div class="pack-edition">5 cards per pull</div>
+          </div>
+          <button class="pull-btn" onclick="openPack('normal')">Open Pack</button>
+        </div>
+        <div class="pack-wrap" id="special-pack-wrap">
+          <div class="pack-visual special-pack" onclick="openPack('special')">
+            <div class="shimmer"></div>
+            <div class="pack-icon">✨</div>
+            <div class="pack-logo">Special<br>Premium Pack</div>
+            <div class="pack-edition">Guaranteed SR+</div>
+          </div>
+          <button class="pull-btn special-pull-btn" onclick="openPack('special')">Open Special</button>
+          <div id="special-cooldown" class="special-cooldown"></div>
+        </div>
       </div>
-      <p class="packs-info">Unlimited pulls &mdash; Powered by the Uncyclopedia API</p>
-      <button class="pull-btn" id="pull-btn" onclick="openPack()">Open Pack</button>
       <button class="cleanse-btn" onclick="cleanseCards()">🗑️ Cleanse Collection (Dev)</button>
     </div>
+
+  <!-- UR ANIMATION OVERLAY -->
+  <div id="ur-overlay" style="display:none;position:fixed;inset:0;z-index:200;pointer-events:none;overflow:hidden;">
+    <canvas id="ur-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+  </div>
     <div id="pull-loading" class="loading" style="display:none">
       <span class="spinner"></span>Pulling from Uncyclopedia...
     </div>
@@ -906,7 +992,7 @@ async function fetchDetails(titles) {
 }
 
 // ── CARD GENERATION ────────────────────────────────────────────────────
-const RARITIES  = [{t:'UR',w:1},{t:'SSR',w:4},{t:'SR',w:15},{t:'R',w:30},{t:'C',w:50}];
+const RARITIES  = [{t:'UR',w:0.3},{t:'SSR',w:1.5},{t:'SR',w:8},{t:'R',w:25},{t:'C',w:65}];
 const TYPES     = ['Meme','Stub','Satire','Parody','Nonsense','Propaganda','Vanity','Featured','Conspiracy','Absurdist'];
 const EMOJIS    = ['🐧','🤡','🎩','🌮','🦆','🎭','🏛️','📰','🚀','💀','🤖','🧀','👑','🎪','🦄','🐸','🦖','🍕','🌵','🔮','🦑','🛸','🧲','🏴‍☠️','🧸'];
 
@@ -947,14 +1033,43 @@ function makeCard(page, forcedRarity) {
   };
 }
 
+// ── SPECIAL PACK COOLDOWN ─────────────────────────────────────────────
+let specialAvailable = true;
+let specialTimer = null;
+const SPECIAL_COOLDOWN_MS = 5 * 60 * 1000; // 5 min cooldown
+
+function setSpecialCooldown() {
+  specialAvailable = false;
+  const btn = document.querySelector('.special-pull-btn');
+  const info = document.getElementById('special-cooldown');
+  if (btn) btn.disabled = true;
+  let remaining = SPECIAL_COOLDOWN_MS / 1000;
+  function tick() {
+    if (remaining <= 0) {
+      specialAvailable = true;
+      if (btn) btn.disabled = false;
+      if (info) info.textContent = 'Ready!';
+      setTimeout(() => { if (info) info.textContent = ''; }, 2000);
+      return;
+    }
+    const m = Math.floor(remaining / 60), s = remaining % 60;
+    if (info) info.textContent = `Next special in ${m}:${String(s).padStart(2,'0')}`;
+    remaining--;
+    specialTimer = setTimeout(tick, 1000);
+  }
+  tick();
+}
+
 // ── PACK OPENING ───────────────────────────────────────────────────────
-async function openPack() {
-  const btn     = document.getElementById('pull-btn');
+async function openPack(type = 'normal') {
+  if (type === 'special' && !specialAvailable) return;
+
+  const btn     = type === 'special' ? document.querySelector('.special-pull-btn') : document.getElementById('pull-btn');
   const loading = document.getElementById('pull-loading');
   const errEl   = document.getElementById('pull-error');
   const results = document.getElementById('pull-results');
 
-  btn.disabled       = true;
+  if (btn) btn.disabled = true;
   loading.style.display = 'block';
   errEl.style.display   = 'none';
   results.innerHTML     = '';
@@ -965,21 +1080,41 @@ async function openPack() {
 
     const cards = randoms.map((r, i) => {
       const page = pages.find(p => p.title === r.title) || { title: r.title, pageid: r.id };
-      // Guarantee at least one R on first card (soft pity)
-      const rarity = rollRarity();
-      return makeCard(page, i === 0 && rarity === 'C' ? 'R' : rarity);
+      let rarity = rollRarity();
+
+      if (type === 'special') {
+        // Special pack: slots 0+1 guaranteed SR or better
+        if (i < 2) {
+          while (['C','R'].includes(rarity)) rarity = rollRarity();
+        }
+        // At least one SSR+ across the whole pack
+        if (i === 4 && !cards.some(c => ['SSR','UR'].includes(c.rarity))) {
+          rarity = Math.random() < 0.15 ? 'UR' : 'SSR';
+        }
+      } else {
+        // Normal pack: soft pity — first card can't be C
+        if (i === 0 && rarity === 'C') rarity = 'R';
+      }
+
+      return makeCard(page, rarity);
     });
 
     loading.style.display = 'none';
 
+    // Check for UR before revealing
+    const hasUR = cards.some(c => c.rarity === 'UR');
+    if (hasUR) playURAnimation();
+
     cards.forEach((card, i) => {
       setTimeout(() => {
         results.insertAdjacentHTML('beforeend', cardHTML(card));
-      }, i * 150);
+      }, i * 150 + (hasUR ? 1800 : 0));
     });
 
     deck.push(...cards);
     save();
+
+    if (type === 'special') setSpecialCooldown();
 
   } catch (err) {
     loading.style.display = 'none';
@@ -988,7 +1123,7 @@ async function openPack() {
     console.error(err);
   }
 
-  btn.disabled = false;
+  if (btn && type !== 'special') btn.disabled = false;
 }
 
 function cardHTML(c) {
@@ -1088,9 +1223,9 @@ function renderDeck() {
   }
 
   grid.innerHTML = cards.map(c => {
-    // Reuse the full cardHTML but wrap in a div that intercepts clicks for the modal
     const html = cardHTML(c);
-    return `<div onclick="openModal(${c.id})" style="cursor:pointer">${html}</div>`;
+    // Intercept all clicks on this wrapper — open modal, never navigate
+    return `<div onclick="openModal(${c.id});event.preventDefault();" style="cursor:pointer">${html}</div>`;
   }).join('');
 }
 
@@ -1129,15 +1264,89 @@ function cleanseCards() {
   alert('Collection cleared.');
 }
 
-// ── METALLIC SHEEN — track mouse per card ─────────────────────────────
+// ── UR RIBBON ANIMATION ────────────────────────────────────────────────
+function playURAnimation() {
+  const overlay = document.getElementById('ur-overlay');
+  const canvas  = document.getElementById('ur-canvas');
+  overlay.style.display = 'block';
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+
+  const ribbons = Array.from({length: 18}, (_, i) => ({
+    x: -canvas.width * 0.3,
+    y: Math.random() * canvas.height * 1.4 - canvas.height * 0.2,
+    w: 18 + Math.random() * 40,
+    speed: 6 + Math.random() * 8,
+    alpha: 0.4 + Math.random() * 0.5,
+    hue: 42 + (Math.random() - 0.5) * 20, // gold range
+    delay: i * 60,
+    started: false,
+    done: false,
+  }));
+
+  let frame = 0;
+  let allDone = false;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let doneCount = 0;
+    for (const r of ribbons) {
+      if (frame < r.delay) continue;
+      r.started = true;
+      r.x += r.speed;
+
+      if (r.x > canvas.width * 1.4) { r.done = true; doneCount++; continue; }
+
+      ctx.save();
+      ctx.translate(r.x, r.y);
+      ctx.rotate(-25 * Math.PI / 180);
+
+      // Chrome-gold ribbon with highlight streak
+      const grad = ctx.createLinearGradient(0, -r.w / 2, 0, r.w / 2);
+      grad.addColorStop(0,    `hsla(${r.hue}, 90%, 25%, 0)`);
+      grad.addColorStop(0.2,  `hsla(${r.hue}, 85%, 55%, ${r.alpha * 0.7})`);
+      grad.addColorStop(0.45, `hsla(${r.hue}, 95%, 80%, ${r.alpha})`);
+      grad.addColorStop(0.55, `hsla(${r.hue+10}, 100%, 95%, ${r.alpha})`);
+      grad.addColorStop(0.75, `hsla(${r.hue}, 85%, 55%, ${r.alpha * 0.7})`);
+      grad.addColorStop(1,    `hsla(${r.hue}, 90%, 25%, 0)`);
+
+      ctx.fillStyle = grad;
+      ctx.fillRect(-60, -r.w / 2, canvas.width * 2, r.w);
+      ctx.restore();
+    }
+
+    frame++;
+    if (doneCount >= ribbons.length) {
+      // Fade out overlay
+      let a = 1;
+      function fadeOut() {
+        a -= 0.06;
+        overlay.style.opacity = Math.max(0, a);
+        if (a > 0) requestAnimationFrame(fadeOut);
+        else { overlay.style.display = 'none'; overlay.style.opacity = 1; }
+      }
+      fadeOut();
+      return;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── METALLIC SHEEN — mouse tracking ───────────────────────────────────
 document.addEventListener('mousemove', e => {
   const card = e.target.closest('.card');
   if (!card) return;
   const r   = card.getBoundingClientRect();
   const mx  = ((e.clientX - r.left) / r.width  * 100).toFixed(1);
   const my  = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+  // Angle: map mouse X across card to a rotation range for the chrome band
+  const angle = 90 + ((e.clientX - r.left) / r.width - 0.5) * 60;
   card.style.setProperty('--mx', mx + '%');
   card.style.setProperty('--my', my + '%');
+  card.style.setProperty('--angle', angle + 'deg');
 });
 
 // Close modal on Escape
