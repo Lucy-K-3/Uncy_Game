@@ -660,7 +660,7 @@ async function fetchRandom(n = 5) {
 
 async function fetchDetails(titles) {
   const t   = titles.map(encodeURIComponent).join('|');
-  const url = `${API}?action=query&titles=${t}&prop=revisions|categories|links|pageimages|extracts&rvprop=size&cllimit=20&pllimit=30&pithumbsize=300&exintro=1&exchars=300&exsentences=3&explaintext=1&format=json&origin=*`;
+  const url = `${API}?action=query&titles=${t}&prop=revisions|categories|links|pageimages|extracts&rvprop=size&cllimit=20&pllimit=30&pithumbsize=300&exintro=1&exchars=400&explaintext=1&format=json&origin=*`;
   const r   = await fetch(url);
   const d   = await r.json();
   console.log('[fetchDetails] status:', r.status, 'body:', JSON.stringify(d).slice(0, 300));
