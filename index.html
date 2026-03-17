@@ -379,14 +379,7 @@
     cursor: pointer;
   }
 
-  /* ── DECK ── */
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
+  /* ── COLLECTION TOOLBAR ── */
   .section-title {
     font-size: 13px;
     font-weight: 700;
@@ -395,32 +388,263 @@
     letter-spacing: 1px;
   }
 
-  .deck-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
-  }
-
-  .mini-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
+  .coll-toolbar {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    transition: transform 0.1s, border-color 0.1s;
-    text-decoration: none;
-    color: inherit;
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
-  .mini-card:hover { transform: scale(1.03); border-color: rgba(201,162,39,0.4); }
-  .mini-card .mname { font-size: 12px; font-weight: 700; line-height: 1.2; }
-  .mini-card .mtype { font-size: 10px; color: var(--muted); }
-  .mini-card .mstats { font-size: 11px; color: var(--gold); font-weight: 600; }
-  .mini-card .mlink { font-size: 10px; color: var(--muted); text-decoration: none; margin-top: 2px; display: inline-block; }
-  .mini-card .mlink:hover { color: var(--gold); }
+  .coll-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .deck-count-badge {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 10px;
+  }
+
+  .coll-search {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .coll-search:focus { border-color: rgba(201,162,39,0.5); }
+  .coll-search::placeholder { color: var(--muted); }
+
+  .coll-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .coll-sort-btns {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .sort-btn {
+    padding: 5px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .sort-btn:hover { border-color: rgba(201,162,39,0.4); color: var(--text); }
+  .sort-btn.active { background: rgba(201,162,39,0.15); border-color: var(--gold); color: var(--gold); }
+
+  .rarity-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .rtab {
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .rtab:hover { color: var(--text); }
+  .rtab.active { color: #111; }
+  .rtab.active          { background: #888;          border-color: #888; }
+  .rtab.ur.active       { background: var(--gold);   border-color: var(--gold);   color: #1a1200; }
+  .rtab.ssr.active      { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .rtab.sr.active       { background: var(--blue);   border-color: var(--blue);   color: #fff; }
+  .rtab.r.active        { background: var(--bronze); border-color: var(--bronze); color: #fff; }
+  .rtab.c.active        { background: #555;          border-color: #555;          color: #ccc; }
+
+  /* ── DECK GRID ── */
+  .deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  /* Mini card in collection — same frame style as pull cards but slightly smaller */
+  .mini-card {
+    border-radius: 10px;
+    padding: 4px;
+    cursor: pointer;
+    transition: transform 0.15s, filter 0.15s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .mini-card:hover { transform: translateY(-4px) scale(1.02); filter: brightness(1.1); }
+
+  .mini-card.rarity-C   { background: linear-gradient(160deg, #4a4a4a, #2a2a2a); }
+  .mini-card.rarity-R   { background: linear-gradient(160deg, #c87a3a, #7a4010); }
+  .mini-card.rarity-SR  { background: linear-gradient(160deg, #5a9ae0, #1a4a8a); }
+  .mini-card.rarity-SSR { background: linear-gradient(160deg, #a060e0, #501890); }
+  .mini-card.rarity-UR  { background: linear-gradient(160deg, #f0c84a, #c9a227, #8a6810); }
+
+  .mini-inner {
+    background: #111008;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .mini-img {
+    width: 100%;
+    height: 80px;
+    background: #1a1610;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    overflow: hidden;
+  }
+
+  .mini-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .mini-info {
+    padding: 6px 7px 7px;
+  }
+
+  .mini-head {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 3px;
+  }
+
+  .mini-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .rarity-C   .mini-badge { background: #555; color: #ccc; }
+  .rarity-R   .mini-badge { background: var(--bronze); color: #fff; }
+  .rarity-SR  .mini-badge { background: var(--blue); color: #fff; }
+  .rarity-SSR .mini-badge { background: var(--purple); color: #fff; }
+  .rarity-UR  .mini-badge { background: var(--gold); color: #1a1200; }
+
+  .mini-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #f0e8d0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mini-stats {
+    display: flex;
+    gap: 8px;
+    font-size: 10px;
+    color: #8a8070;
+    margin-top: 2px;
+  }
+
+  .mini-stat-val { font-weight: 700; color: #c8b890; }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 260px;
+    width: 100%;
+    animation: modalIn 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s;
+    z-index: 2;
+  }
+
+  .modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+  /* The card inside the modal reuses .card styles — just needs full width */
+  .modal-box .card { width: 100%; animation: none; cursor: default; }
+
+  .modal-link-btn {
+    display: block;
+    width: 100%;
+    padding: 11px 0;
+    text-align: center;
+    background: var(--gold);
+    color: #1a1200;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.12s;
+  }
+
+  .modal-link-btn:hover { background: var(--gold-lt); }
 
   /* ── BATTLE ── */
   .fighter-grid {
@@ -601,12 +825,45 @@
 
   <!-- COLLECTION -->
   <div id="screen-deck" class="screen">
-    <div class="section-header">
-      <span class="section-title">Your Collection</span>
-      <span id="deck-count" style="font-size:13px;color:var(--muted)">0 cards</span>
+    <div class="coll-toolbar">
+      <div class="coll-top">
+        <span class="section-title">Collection</span>
+        <span id="deck-count" class="deck-count-badge">0 cards</span>
+      </div>
+      <!-- Search -->
+      <input id="coll-search" class="coll-search" type="text" placeholder="Search cards..." oninput="renderDeck()">
+      <!-- Controls row -->
+      <div class="coll-controls">
+        <div class="coll-sort-btns">
+          <button class="sort-btn active" id="sort-none"  onclick="setSort('none',this)">Default</button>
+          <button class="sort-btn"        id="sort-atk"   onclick="setSort('atk',this)">ATK ↓</button>
+          <button class="sort-btn"        id="sort-def"   onclick="setSort('def',this)">DEF ↓</button>
+          <button class="sort-btn"        id="sort-hp"    onclick="setSort('hp',this)">HP ↓</button>
+        </div>
+      </div>
+      <!-- Rarity filter tabs -->
+      <div class="rarity-tabs">
+        <button class="rtab active" onclick="setRarity('ALL',this)">All</button>
+        <button class="rtab ur"     onclick="setRarity('UR',this)">UR</button>
+        <button class="rtab ssr"    onclick="setRarity('SSR',this)">SSR</button>
+        <button class="rtab sr"     onclick="setRarity('SR',this)">SR</button>
+        <button class="rtab r"      onclick="setRarity('R',this)">R</button>
+        <button class="rtab c"      onclick="setRarity('C',this)">C</button>
+      </div>
     </div>
     <div id="deck-grid" class="deck-grid">
       <p class="empty">Pull some packs to start your collection!</p>
+    </div>
+  </div>
+
+  <!-- CARD VIEWER MODAL -->
+  <div id="card-modal" class="modal-backdrop" onclick="closeModal(event)" style="display:none">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-card-wrap"></div>
+      <a id="modal-link" href="#" target="_blank" rel="noopener" class="modal-link-btn">
+        Open on Uncyclopedia ↗
+      </a>
     </div>
   </div>
 
@@ -660,7 +917,7 @@ async function fetchRandom(n = 5) {
 
 async function fetchDetails(titles) {
   const t   = titles.map(encodeURIComponent).join('|');
-  const url = `${API}?action=query&titles=${t}&prop=revisions|categories|links|pageimages|extracts&rvprop=size&cllimit=20&pllimit=30&pithumbsize=300&exintro=1&exchars=400&explaintext=1&format=json&origin=*`;
+  const url = `${API}?action=query&titles=${t}&prop=revisions|categories|links|pageimages|extracts&rvprop=size&cllimit=20&pllimit=30&pithumbsize=300&exintro=1&exchars=160&explaintext=1&format=json&origin=*`;
   const r   = await fetch(url);
   const d   = await r.json();
   console.log('[fetchDetails] status:', r.status, 'body:', JSON.stringify(d).slice(0, 300));
@@ -803,9 +1060,28 @@ function cardHTML(c) {
     </a>`;
 }
 
+// ── COLLECTION STATE ───────────────────────────────────────────────────
+let collSort   = 'none';
+let collRarity = 'ALL';
+
+function setSort(s, el) {
+  collSort = s;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderDeck();
+}
+
+function setRarity(r, el) {
+  collRarity = r;
+  document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderDeck();
+}
+
 // ── DECK ───────────────────────────────────────────────────────────────
 function renderDeck() {
-  const grid = document.getElementById('deck-grid');
+  const grid    = document.getElementById('deck-grid');
+  const search  = (document.getElementById('coll-search')?.value || '').toLowerCase();
   document.getElementById('deck-count').textContent = deck.length + ' cards';
 
   if (!deck.length) {
@@ -813,14 +1089,81 @@ function renderDeck() {
     return;
   }
 
-  grid.innerHTML = deck.map(c => `
-    <a class="mini-card" href="${c.url}" target="_blank" rel="noopener">
-      <div style="font-size:24px">${c.emoji}</div>
-      <div class="mname">${c.title}</div>
-      <div class="mtype">${c.rarity} · ${c.type}</div>
-      <div class="mstats">${c.atk} ATK · ${c.def} DEF · ${c.hp} HP</div>
-    </a>`).join('');
+  let cards = [...deck];
+
+  // Filter by rarity
+  if (collRarity !== 'ALL') cards = cards.filter(c => c.rarity === collRarity);
+
+  // Filter by search
+  if (search) cards = cards.filter(c => c.title.toLowerCase().includes(search));
+
+  // Sort
+  if (collSort === 'atk') cards.sort((a,b) => b.atk - a.atk);
+  else if (collSort === 'def') cards.sort((a,b) => b.def - a.def);
+  else if (collSort === 'hp')  cards.sort((a,b) => b.hp  - a.hp);
+
+  if (!cards.length) {
+    grid.innerHTML = '<p class="empty">No cards match.</p>';
+    return;
+  }
+
+  grid.innerHTML = cards.map(c => {
+    const imgHTML = c.thumb
+      ? `<div class="mini-img"><img src="${c.thumb}" alt="${c.title}" loading="lazy"></div>`
+      : `<div class="mini-img">${c.emoji}</div>`;
+    return `
+      <div class="mini-card rarity-${c.rarity}" onclick="openModal(${c.id})">
+        <div class="mini-inner">
+          ${imgHTML}
+          <div class="mini-info">
+            <div class="mini-head">
+              <span class="mini-badge">${c.rarity}</span>
+              <span class="mini-name">${c.title}</span>
+            </div>
+            <div class="mini-stats">
+              <span>ATK <span class="mini-stat-val">${c.atk}</span></span>
+              <span>DEF <span class="mini-stat-val">${c.def}</span></span>
+              <span>HP <span class="mini-stat-val">${c.hp}</span></span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 }
+
+// ── CARD VIEWER MODAL ──────────────────────────────────────────────────
+function openModal(id) {
+  const c = deck.find(c => c.id == id);
+  if (!c) return;
+
+  // Render card HTML then neutralize the anchor so clicking the card doesn't navigate
+  const wrap = document.getElementById('modal-card-wrap');
+  wrap.innerHTML = cardHTML(c);
+  const anchor = wrap.querySelector('a.card');
+  if (anchor) {
+    anchor.removeAttribute('href');
+    anchor.style.cursor = 'default';
+  }
+
+  document.getElementById('modal-link').href = c.url;
+  document.getElementById('card-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  // Close if clicking backdrop or the X button (not the card itself)
+  if (e && e.target !== document.getElementById('card-modal')) return;
+  document.getElementById('card-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('card-modal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+});
 
 // ── BATTLE SETUP ───────────────────────────────────────────────────────
 function renderBattleSetup() {
