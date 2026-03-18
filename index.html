@@ -1189,9 +1189,9 @@
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('gacha',this)">🎴 Pull</button>
-    <button class="tab" onclick="switchTab('deck',this)">📦 Collection</button>
-    <button class="tab" onclick="switchTab('battle',this)">⚔️ Battle</button>
+    <button class="tab active" onclick="switchTab('gacha',this)">Pull</button>
+    <button class="tab" onclick="switchTab('deck',this)">Collection</button>
+    <button class="tab" onclick="switchTab('battle',this)">Battle</button>
   </div>
 
   <!-- PULL -->
@@ -1204,7 +1204,7 @@
         <img src="potato.webp" class="bag-svg" alt="Uncyclopedia Potato" draggable="false">
       </div>
       <p class="bag-hint">Tap the potato to pull 5 cards</p>
-      <button class="cleanse-btn" onclick="cleanseCards()">🗑️ Cleanse Collection (Dev)</button>
+      <button class="cleanse-btn" onclick="cleanseCards()">Cleanse Collection (Dev)</button>
     </div>
 
     <!-- State B: shaking/splitting potato loading screen -->
@@ -1258,7 +1258,7 @@
       <!-- Rarity filter tabs -->
       <div class="rarity-tabs">
         <button class="rtab active" onclick="setRarity('ALL',this)">All</button>
-        <button class="rtab fav"    onclick="setRarity('FAV',this)">⭐ Faves</button>
+        <button class="rtab fav"    onclick="setRarity('FAV',this)">Faves</button>
         <button class="rtab lr"     onclick="setRarity('LR',this)">LR</button>
         <button class="rtab ur"     onclick="setRarity('UR',this)">UR</button>
         <button class="rtab ssr"    onclick="setRarity('SSR',this)">SSR</button>
@@ -1279,7 +1279,7 @@
       <div id="modal-card-wrap"></div>
       <div class="modal-actions">
         <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">☆ Favorite</button>
-        <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">⚗️ Merge</button>
+        <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">Merge</button>
       </div>
       <a id="modal-link" href="#" target="_blank" rel="noopener" class="modal-link-btn">
         Open on Uncyclopedia ↗
@@ -1292,7 +1292,7 @@
     <div class="modal-box" style="max-width:480px;width:90%">
       <button class="modal-close" onclick="closeMergeModal()">✕</button>
       <div style="width:100%">
-        <p style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);text-align:center;margin-bottom:4px">⚗️ Merge Cards</p>
+        <p style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);text-align:center;margin-bottom:4px">Merge Cards</p>
         <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:16px">Sacrifice 2 other cards of the same rarity — your base card advances one tier (+10% stats)</p>
         <div id="merge-slots" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px"></div>
         <div id="merge-candidates" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;max-height:260px;overflow-y:auto;padding:4px"></div>
@@ -1311,7 +1311,7 @@
         <p class="empty">Pull some cards first!</p>
       </div>
       <button class="pull-btn" id="start-btn" onclick="startBattle()" disabled style="display:block;margin:0 auto">
-        ⚔️ Start Battle
+        Start Battle
       </button>
     </div>
     <div id="battle-arena" style="display:none"></div>
@@ -1383,7 +1383,6 @@ function makeCard(page, forcedRarity) {
   const mult = {C:0.7, R:0.9, SR:1.1, SSR:1.4, UR:1.8, LR:2.5}[rarity] || 1;
   const size  = page?.revisions?.[0]?.size || 2000;
   const links = (page?.links      || []).length;
-  const cats  = (page?.categories || []).length;
   const id    = page?.pageid || Math.floor(Math.random() * 99999);
 
   const hp  = Math.round((size / 80  + 20 + Math.random() * 20) * mult);
