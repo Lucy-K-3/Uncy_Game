@@ -1302,7 +1302,7 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
       <div id="modal-card-wrap"></div>
       <div class="modal-actions">
-        <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">☆ Favorite</button>
+        <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">Favorite</button>
         <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">Merge</button>
       </div>
       <a id="modal-link" href="#" target="_blank" rel="noopener" class="modal-link-btn">
@@ -1397,7 +1397,7 @@ function rollRarity() {
 
 function makeCard(page, forcedRarity) {
   const rarity = forcedRarity || rollRarity();
-  const mult   = {C:0.7, R:0.9, SR:1.1, SSR:1.4, UR:1.8}[rarity] || 1;
+  const mult   = {C:0.5, R:0.9, SR:1.1, SSR:1.4, UR:1.8}[rarity] || 1;
   const size   = page?.revisions?.[0]?.size   || 2000;
   const links  = (page?.links       || []).length;
   const cats   = (page?.categories  || []).length;
@@ -1445,7 +1445,7 @@ function resetToIdle() {
   showState('idle');
 }
 
-// ── BAG EXPLOSION ─────────────────────────────────────────────────────
+// ── UNTATO EXPLOSION ─────────────────────────────────────────────────────
 function playExplosion(onDone) {
   const canvas = document.getElementById('explode-stage');
   canvas.width  = window.innerWidth;
@@ -1453,7 +1453,7 @@ function playExplosion(onDone) {
   canvas.style.display = 'block';
   const ctx = canvas.getContext('2d');
 
-  // Find potato image position on screen to explode from its center
+  // Find untato image position on screen to explode from its center
   const potatoEl = document.querySelector('#bag-wrap img.bag-svg') || document.querySelector('.bag-wrap');
   const bagR  = potatoEl ? potatoEl.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2, width:0, height:0};
   const cx = bagR.left + bagR.width  / 2;
@@ -1544,7 +1544,7 @@ async function startPull() {
     const cards = randoms.map((r, i) => {
       const page = pages.find(p => p.title === r.title) || { title: r.title, pageid: r.id };
       let rarity = rollRarity();
-      if (i === 0 && rarity === 'C') rarity = 'R'; // soft pity
+      if (i === 0 && rarity === 'C') rarity = 'R';
       return makeCard(page, rarity);
     });
 
@@ -1679,14 +1679,6 @@ function cardHTML(c) {
   const fullText = c.extract || '';
   const sentences = fullText.match(/[^.!?]+[.!?]+/g) || [];
   const excerpt  = sentences.slice(0, 3).join(' ').trim() || fullText.slice(0, 200);
-  const flavours = [
-    `A legendary ${c.title.toLowerCase()} defies all known logic.`,
-    `Those who have read about ${c.title} are never quite the same.`,
-    `${c.title} — feared by scholars, beloved by idiots.`,
-    `The very mention of ${c.title} causes historians to weep.`,
-    `No one truly understands ${c.title}. That's the point.`,
-  ];
-  const flavour = flavours[c.id % flavours.length];
 
   // Count dupes in deck
   const dupeCount = deck.filter(d => d.title === c.title).length;
@@ -1708,7 +1700,6 @@ function cardHTML(c) {
         </div>
         ${imageHTML}
         <div class="card-excerpt">${excerpt || 'No summary available for this article.'}</div>
-        <div class="card-flavour">${flavour}</div>
         <div class="card-stats">
           <div class="stat stat-atk">
             <span class="stat-label">ATK</span>
@@ -1843,7 +1834,7 @@ function toggleFavorite() {
 
 // ── MERGE SYSTEM ──────────────────────────────────────────────────────
 const RARITY_ORDER = ['C','R','SR','SSR','UR'];
-let mergeTargetIds = []; // the 2 cards we're sacrificing
+let mergeTargetIds = [];
 
 function openMergePanel() {
   const base = deck.find(d => d.id == modalCardId);
@@ -1965,7 +1956,7 @@ function confirmMerge() {
 
 // ── DEV: CLEANSE ──────────────────────────────────────────────────────
 function cleanseCards() {
-  if (!confirm('Wipe entire collection? This cannot be undone.')) return;
+  if (!confirm('Wipes entire collection')) return;
   deck = [];
   save();
   document.getElementById('pull-results').innerHTML = '';
