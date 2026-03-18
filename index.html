@@ -543,6 +543,22 @@
     z-index: 4;
     pointer-events: none;
   }
+  /* LR — legendary red, rarer than UR */
+  .card.rarity-LR {
+    background: linear-gradient(135deg, #ff4040 0%, #8b0000 25%, #e02020 50%, #6b0000 75%, #cc1010 100%);
+    box-shadow: 0 6px 40px rgba(220,30,30,0.75), 0 0 60px rgba(200,0,0,0.3);
+    --metal: neutral; --convexity: 6;
+  }
+  .card.rarity-LR::before {
+    content: '✦';
+    position: absolute;
+    top: -12px; right: -8px;
+    font-size: 26px;
+    color: #ff6060;
+    text-shadow: 0 0 12px rgba(255,60,60,1), 0 0 24px rgba(255,0,0,0.6);
+    z-index: 4;
+    pointer-events: none;
+  }
 
   /* Inner card body — flex column filling the whole frame */
   .card-inner {
@@ -578,6 +594,7 @@
   .rarity-SR  .rarity-badge { background: #3a7bc8; color: #fff; }
   .rarity-SSR .rarity-badge { background: #7b3ac8; color: #fff; }
   .rarity-UR  .rarity-badge { background: var(--gold); color: #1a1200; }
+  .rarity-LR  .rarity-badge { background: #cc1010; color: #fff; letter-spacing: 0.5px; text-shadow: 0 0 6px rgba(255,80,80,0.7); }
 
   .card-title {
     font-size: clamp(9px, 2.8cqi, 14px);
@@ -894,6 +911,7 @@
   .rtab:hover { color: var(--text); }
   .rtab.active { color: #111; }
   .rtab.active          { background: #888;          border-color: #888; }
+  .rtab.lr.active       { background: #cc1010;       border-color: #ff4040;       color: #fff; text-shadow: 0 0 6px rgba(255,80,80,0.6); }
   .rtab.ur.active       { background: var(--gold);   border-color: var(--gold);   color: #1a1200; }
   .rtab.ssr.active      { background: var(--purple); border-color: var(--purple); color: #fff; }
   .rtab.sr.active       { background: var(--blue);   border-color: var(--blue);   color: #fff; }
@@ -1234,6 +1252,7 @@
       <div class="rarity-tabs">
         <button class="rtab active" onclick="setRarity('ALL',this)">All</button>
         <button class="rtab fav"    onclick="setRarity('FAV',this)">⭐ Faves</button>
+        <button class="rtab lr"     onclick="setRarity('LR',this)">LR</button>
         <button class="rtab ur"     onclick="setRarity('UR',this)">UR</button>
         <button class="rtab ssr"    onclick="setRarity('SSR',this)">SSR</button>
         <button class="rtab sr"     onclick="setRarity('SR',this)">SR</button>
@@ -1334,7 +1353,8 @@ async function fetchDetails(titles) {
 }
 
 // ── CARD GENERATION ────────────────────────────────────────────────────
-const RARITIES  = [{t:'UR',w:0.3},{t:'SSR',w:1.5},{t:'SR',w:8},{t:'R',w:25},{t:'C',w:65}];
+const RARITIES  = [{t:'LR',w:0.05},{t:'UR',w:0.3},{t:'SSR',w:1.5},{t:'SR',w:8},{t:'R',w:25},{t:'C',w:65}];
+const LR_CARDS  = ['Oscar Wilde','Uncyclopedia','Sophia','Fisher Price']; // the only LR cards
 const TYPES     = ['Meme','Stub','Satire','Parody','Nonsense','Propaganda','Vanity','Featured','Conspiracy','Absurdist'];
 const EMOJIS    = ['🐧','🤡','🎩','🌮','🦆','🎭','🏛️','📰','🚀','💀','🤖','🧀','👑','🎪','🦄','🐸','🦖','🍕','🌵','🔮','🦑','🛸','🧲','🏴‍☠️','🧸'];
 
@@ -1346,23 +1366,29 @@ function rollRarity() {
 }
 
 function makeCard(page, forcedRarity) {
-  const rarity = forcedRarity || rollRarity();
-  const mult   = {C:0.7, R:0.9, SR:1.1, SSR:1.4, UR:1.8}[rarity] || 1;
-  const size   = page?.revisions?.[0]?.size   || 2000;
-  const links  = (page?.links       || []).length;
-  const cats   = (page?.categories  || []).length;
-  const id     = page?.pageid || Math.floor(Math.random() * 99999);
+  let rarity = forcedRarity || rollRarity();
+
+  // LR cards have fixed titles — override the page if we rolled LR
+  if (rarity === 'LR' && !LR_CARDS.includes(page?.title)) {
+    const lrTitle = LR_CARDS[Math.floor(Math.random() * LR_CARDS.length)];
+    page = { ...(page || {}), title: lrTitle, pageid: page?.pageid || Math.abs(lrTitle.charCodeAt(0) * 137) };
+  }
+
+  const mult = {C:0.7, R:0.9, SR:1.1, SSR:1.4, UR:1.8, LR:2.5}[rarity] || 1;
+  const size  = page?.revisions?.[0]?.size || 2000;
+  const links = (page?.links      || []).length;
+  const cats  = (page?.categories || []).length;
+  const id    = page?.pageid || Math.floor(Math.random() * 99999);
 
   const hp  = Math.round((size / 80  + 20 + Math.random() * 20) * mult);
   const atk = Math.round((links * 0.9 + 5  + Math.random() * 12) * mult);
   const def = Math.round((cats  * 1.5 + 5  + Math.random() * 8)  * mult);
-  const spd = Math.round((Math.random() * 20 + 10) * mult);
 
   return {
     id,
     title:   page?.title || 'Unknown Article',
     rarity,
-    type:    TYPES [id % TYPES.length],
+    type:    TYPES[id % TYPES.length],
     emoji:   EMOJIS[id % EMOJIS.length],
     thumb:   page?.thumbnail?.source || null,
     extract: page?.extract || '',
@@ -1370,7 +1396,6 @@ function makeCard(page, forcedRarity) {
     maxHp:   Math.max(hp,  12),
     atk:     Math.max(atk,  4),
     def:     Math.max(def,  3),
-    spd:     Math.max(spd,  5),
     url:     'https://en.uncyclopedia.co/wiki/' + encodeURIComponent(page?.title || ''),
   };
 }
@@ -1507,14 +1532,17 @@ async function startPull() {
     shakeWrap.classList.add('splitting');
 
     const hasUR = cards.some(c => c.rarity === 'UR');
-    if (hasUR) playURAnimation();
+    const hasLR = cards.some(c => c.rarity === 'LR');
+    if (hasLR) playLRAnimation();
+    else if (hasUR) playURAnimation();
 
-    // Wait for split animation then reveal stack
+    // Wait for animation then reveal stack
+    const animDelay = hasLR ? 2400 : hasUR ? 2000 : 540;
     setTimeout(() => {
       stackCards = cards;
       stackIndex = 0;
       buildStack();
-    }, hasUR ? 2000 : 540);
+    }, animDelay);
 
   } catch (err) {
     shakeWrap.classList.remove('shaking');
@@ -1666,7 +1694,6 @@ function cardHTML(c) {
         </div>
         <div class="card-tags">
           <span class="card-tag">${c.type}</span>
-          <span class="card-tag">SPD ${c.spd}</span>
           ${mergeTag}
         </div>
       </div>
@@ -1750,10 +1777,10 @@ function openModal(id) {
 
   // Merge button — requires 2 OTHER cards of same rarity (3 total) to sacrifice
   const canMerge = deck.filter(d => d.rarity === c.rarity && d.id !== c.id).length >= 2
-    && c.rarity !== 'UR'; // UR can't be merged further
+    && c.rarity !== 'UR' && c.rarity !== 'LR'; // UR/LR can't be merged
   const mergeBtn = document.getElementById('modal-merge-btn');
   mergeBtn.disabled = !canMerge;
-  mergeBtn.title = !canMerge ? (c.rarity === 'UR' ? 'UR cards cannot be merged' : 'Need another card of same rarity') : 'Merge with another card';
+  mergeBtn.title = !canMerge ? (c.rarity === 'UR' || c.rarity === 'LR' ? 'LR/UR cards cannot be merged' : 'Need 2 other cards of same rarity') : 'Merge with another card';
 
   document.getElementById('card-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -1785,7 +1812,7 @@ function toggleFavorite() {
 }
 
 // ── MERGE SYSTEM ──────────────────────────────────────────────────────
-const RARITY_ORDER = ['C','R','SR','SSR','UR'];
+const RARITY_ORDER = ['C','R','SR','SSR','UR']; // LR cards cannot be merged
 let mergeTargetIds = []; // the 2 cards we're sacrificing
 
 function openMergePanel() {
@@ -1931,250 +1958,111 @@ async function applyMetallicss() {
 }
 
 // ── UR RIBBON ANIMATION ────────────────────────────────────────────────
-function playURAnimation() {
+// ── RARITY ANIMATIONS ────────────────────────────────────────────────
+function playRarityAnimation(hue1, hue2, glowColor) {
   const overlay = document.getElementById('ur-overlay');
   const canvas  = document.getElementById('ur-canvas');
   overlay.style.display = 'block';
+  overlay.style.opacity = '1';
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
   const ctx = canvas.getContext('2d');
+  const cx  = canvas.width  / 2;
+  const cy  = canvas.height / 2;
 
-  const ribbons = Array.from({length: 18}, (_, i) => ({
-    x: -canvas.width * 0.3,
-    y: Math.random() * canvas.height * 1.4 - canvas.height * 0.2,
-    w: 18 + Math.random() * 40,
-    speed: 6 + Math.random() * 8,
-    alpha: 0.4 + Math.random() * 0.5,
-    hue: 42 + (Math.random() - 0.5) * 20, // gold range
-    delay: i * 60,
-    started: false,
-    done: false,
+  // Radial burst: rings that expand from center outward
+  const rings = Array.from({length: 24}, (_, i) => ({
+    r:      0,
+    maxR:   Math.max(canvas.width, canvas.height) * (0.9 + Math.random() * 0.5),
+    speed:  8 + Math.random() * 12,
+    width:  6 + Math.random() * 22,
+    alpha:  0.5 + Math.random() * 0.5,
+    hue:    hue1 + (Math.random() - 0.5) * (hue2 - hue1),
+    delay:  i * 28,
   }));
 
+  // Sparkle particles radiating outward
+  const sparks = Array.from({length: 60}, () => {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 10;
+    return { x: cx, y: cy, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+             alpha: 1, size: 2+Math.random()*4, hue: hue1+(Math.random()-0.5)*30 };
+  });
+
+  // Central bloom
+  let bloom = 0;
   let frame = 0;
-  let allDone = false;
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let doneCount = 0;
-    for (const r of ribbons) {
-      if (frame < r.delay) continue;
-      r.started = true;
-      r.x += r.speed;
+    // Bloom glow at center
+    if (bloom < 1) { bloom += 0.07; }
+    const bR = bloom * 220;
+    const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, bR);
+    bg.addColorStop(0,   glowColor.replace('A)', `${0.55 * bloom})`));
+    bg.addColorStop(0.4, glowColor.replace('A)', `${0.25 * bloom})`));
+    bg.addColorStop(1,   glowColor.replace('A)', '0)'));
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (r.x > canvas.width * 1.4) { r.done = true; doneCount++; continue; }
-
+    // Expanding rings
+    for (const ring of rings) {
+      if (frame < ring.delay) continue;
+      ring.r += ring.speed;
+      const fade = Math.max(0, 1 - ring.r / ring.maxR);
+      if (fade <= 0) continue;
       ctx.save();
-      ctx.translate(r.x, r.y);
-      ctx.rotate(-25 * Math.PI / 180);
+      ctx.strokeStyle = `hsla(${ring.hue}, 90%, 70%, ${ring.alpha * fade})`;
+      ctx.lineWidth   = ring.width * fade;
+      ctx.shadowColor = `hsla(${ring.hue}, 100%, 70%, ${fade * 0.8})`;
+      ctx.shadowBlur  = 18;
+      ctx.beginPath();
+      ctx.arc(cx, cy, ring.r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
 
-      // Chrome-gold ribbon with highlight streak
-      const grad = ctx.createLinearGradient(0, -r.w / 2, 0, r.w / 2);
-      grad.addColorStop(0,    `hsla(${r.hue}, 90%, 25%, 0)`);
-      grad.addColorStop(0.2,  `hsla(${r.hue}, 85%, 55%, ${r.alpha * 0.7})`);
-      grad.addColorStop(0.45, `hsla(${r.hue}, 95%, 80%, ${r.alpha})`);
-      grad.addColorStop(0.55, `hsla(${r.hue+10}, 100%, 95%, ${r.alpha})`);
-      grad.addColorStop(0.75, `hsla(${r.hue}, 85%, 55%, ${r.alpha * 0.7})`);
-      grad.addColorStop(1,    `hsla(${r.hue}, 90%, 25%, 0)`);
-
-      ctx.fillStyle = grad;
-      ctx.fillRect(-60, -r.w / 2, canvas.width * 2, r.w);
+    // Sparks
+    for (const s of sparks) {
+      s.x += s.vx; s.y += s.vy;
+      s.vx *= 0.97; s.vy *= 0.97;
+      s.alpha -= 0.018;
+      if (s.alpha <= 0) continue;
+      ctx.save();
+      ctx.globalAlpha = s.alpha;
+      ctx.fillStyle = `hsl(${s.hue}, 90%, 80%)`;
+      ctx.shadowColor = `hsl(${s.hue}, 100%, 70%)`;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
 
     frame++;
-    if (doneCount >= ribbons.length) {
-      // Fade out overlay
+    const allDone = rings.every(r => frame >= r.delay && (1 - r.r / r.maxR) <= 0);
+    if (!allDone || frame < 80) {
+      requestAnimationFrame(draw);
+    } else {
       let a = 1;
-      function fadeOut() {
+      (function fadeOut() {
         a -= 0.06;
         overlay.style.opacity = Math.max(0, a);
         if (a > 0) requestAnimationFrame(fadeOut);
-        else { overlay.style.display = 'none'; overlay.style.opacity = 1; }
-      }
-      fadeOut();
-      return;
+        else { overlay.style.display = 'none'; overlay.style.opacity = '1'; }
+      })();
     }
-    requestAnimationFrame(draw);
   }
   draw();
 }
 
-// Metallic sheen handled by metallicss.js
-
-// Close modal on Escape
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    document.getElementById('card-modal').style.display = 'none';
-    document.body.style.overflow = '';
-  }
-});
-
-// ── BATTLE SETUP ───────────────────────────────────────────────────────
-function renderBattleSetup() {
-  const grid = document.getElementById('fighter-grid');
-  const btn  = document.getElementById('start-btn');
-
-  if (!deck.length) {
-    grid.innerHTML = '<p class="empty">Pull some cards first!</p>';
-    btn.disabled = true;
-    return;
-  }
-
-  grid.innerHTML = deck.map(c => `
-    <div class="fighter-slot ${selected?.id == c.id ? 'selected' : ''}" onclick="selectFighter(${c.id})">
-      <div class="fs-emoji">${c.emoji}</div>
-      <div class="fs-name">${c.title}</div>
-      <div class="fs-hp">${c.hp} HP</div>
-    </div>`).join('');
-
-  btn.disabled = !selected;
+function playURAnimation() {
+  // Gold burst: hue ~42 (gold/yellow)
+  playRarityAnimation(35, 55, 'hsla(45,100%,60%,A)');
 }
 
-function selectFighter(id) {
-  selected = deck.find(c => c.id == id) || null;
-  renderBattleSetup();
+function playLRAnimation() {
+  // Red burst: hue ~0-10 (crimson/red)
+  playRarityAnimation(0, 15, 'hsla(5,100%,55%,A)');
 }
-
-// ── BATTLE ENGINE ──────────────────────────────────────────────────────
-async function startBattle() {
-  if (!selected) return;
-  const arena = document.getElementById('battle-arena');
-  document.getElementById('battle-setup').style.display = 'none';
-  arena.style.display = 'block';
-  arena.innerHTML = '<div class="loading"><span class="spinner"></span>Summoning your opponent from the wiki...</div>';
-
-  let enemy;
-  try {
-    const [r] = await fetchRandom(1);
-    const [page] = await fetchDetails([r.title]);
-    enemy = makeCard(page || { title: r.title, pageid: r.id });
-  } catch {
-    // Fallback if API fails mid-battle
-    const fallbacks = ['Oscar Wilde','Kitten Huffing','Uncyclopedia','Flying Spaghetti Monster','Chuck Norris'];
-    enemy = makeCard({ title: fallbacks[Math.floor(Math.random()*fallbacks.length)], pageid: 9999 });
-  }
-
-  battle = {
-    player: { ...selected },
-    enemy,
-    log: [],
-    over: false,
-  };
-  renderArena();
-}
-
-function renderArena() {
-  const { player, enemy, log, over } = battle;
-  const pPct = Math.max(0, (player.hp / player.maxHp) * 100);
-  const ePct = Math.max(0, (enemy.hp  / (enemy.maxHp || enemy.hp)) * 100);
-  const barClass = p => p > 50 ? '' : p > 25 ? 'mid' : 'low';
-
-  document.getElementById('battle-arena').innerHTML = `
-    <div class="arena">
-      <div class="combatant">
-        <div class="cthumb">${player.emoji}</div>
-        <div class="cinfo">
-          <div class="cname">${player.title}</div>
-          <div class="ctype">${player.rarity} · ${player.type}</div>
-          <div class="hp-wrap">
-            <div class="hp-label"><span>HP</span><span>${player.hp} / ${player.maxHp}</span></div>
-            <div class="hp-bg"><div class="hp-fill ${barClass(pPct)}" style="width:${pPct}%"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="vs-sep">— VS —</div>
-
-      <div class="combatant enemy">
-        <div class="cthumb">${enemy.emoji}</div>
-        <div class="cinfo">
-          <div class="cname">${enemy.title}</div>
-          <div class="ctype">${enemy.rarity} · ${enemy.type}</div>
-          <div class="hp-wrap">
-            <div class="hp-label"><span>HP</span><span>${enemy.hp} / ${enemy.maxHp}</span></div>
-            <div class="hp-bg"><div class="hp-fill ${barClass(ePct)}" style="width:${ePct}%"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="battle-log" id="blog">
-        ${log.map(e => `<div class="${e.c}">${e.m}</div>`).join('')}
-      </div>
-
-      <div class="battle-actions">
-        ${!over ? `
-          <button class="battle-btn" onclick="act('attack')">⚔️ Attack</button>
-          <button class="battle-btn" onclick="act('special')">✨ Special</button>
-          <button class="battle-btn" onclick="act('defend')">🛡️ Defend</button>
-          <button class="battle-btn danger" onclick="endBattle()">✕ Forfeit</button>
-        ` : `
-          <button class="battle-btn" onclick="endBattle()">🔄 New Battle</button>
-          <button class="battle-btn" onclick="switchTab('gacha', document.querySelectorAll('.tab')[0])">🎴 Pull More</button>
-        `}
-      </div>
-    </div>`;
-
-  const bl = document.getElementById('blog');
-  if (bl) bl.scrollTop = bl.scrollHeight;
-}
-
-function addLog(m, c = '') { battle.log.push({ m, c }); }
-
-function act(action) {
-  if (!battle || battle.over) return;
-  const { player, enemy } = battle;
-
-  if (action === 'attack') {
-    const base = Math.max(1, player.atk - enemy.def + Math.round((Math.random() - 0.3) * 12));
-    const crit = Math.random() < 0.15;
-    const dmg  = crit ? Math.round(base * 1.9) : base;
-    enemy.hp   = Math.max(0, enemy.hp - dmg);
-    addLog(
-      crit
-        ? `💥 CRITICAL HIT! ${player.title} strikes ${enemy.title} for ${dmg}!`
-        : `⚔️ ${player.title} attacks ${enemy.title} for ${dmg} damage.`,
-      crit ? 'log-crit' : 'log-hit'
-    );
-  } else if (action === 'special') {
-    const dmg  = Math.max(2, Math.round(player.atk * 1.6 + player.spd * 0.4) - enemy.def);
-    enemy.hp   = Math.max(0, enemy.hp - dmg);
-    addLog(`✨ ${player.title} unleashes a special for ${dmg} damage!`, 'log-crit');
-  } else if (action === 'defend') {
-    const heal = Math.round(player.def * 0.6 + 6 + Math.random() * 5);
-    player.hp  = Math.min(player.maxHp, player.hp + heal);
-    addLog(`🛡️ ${player.title} braces and recovers ${heal} HP.`, 'log-heal');
-  }
-
-  // Enemy turn (skips if already dead)
-  if (enemy.hp > 0) {
-    const eDef  = action === 'defend' ? Math.round(player.def * 0.4) : Math.round(player.def * 0.75);
-    const eDmg  = Math.max(1, enemy.atk - eDef + Math.round((Math.random() - 0.3) * 10));
-    player.hp   = Math.max(0, player.hp - eDmg);
-    addLog(`🔴 ${enemy.title} retaliates for ${eDmg}.`);
-  }
-
-  // Check result
-  if (enemy.hp <= 0) {
-    addLog(`🏆 Victory! ${enemy.title} has been defeated!`, 'log-end');
-    battle.over = true;
-  } else if (player.hp <= 0) {
-    addLog(`💀 ${player.title} has fallen. Defeat.`, 'log-end');
-    battle.over = true;
-  }
-
-  renderArena();
-}
-
-function endBattle() {
-  battle   = null;
-  selected = null;
-  document.getElementById('battle-arena').style.display = 'none';
-  document.getElementById('battle-setup').style.display = 'block';
-  renderBattleSetup();
-}
-</script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/metallicss/dist/metallicss.min.js" defer></script>
-</body>
-</html>
