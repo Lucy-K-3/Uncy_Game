@@ -835,6 +835,64 @@
     letter-spacing: 1px;
   }
 
+  /* ── RARITY STATS BAR ── */
+  .rarity-stats-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .rarity-stat-chip {
+    flex: 1 1 auto;
+    min-width: 80px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rarity-stat-chip .rsc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .rarity-stat-chip .rsc-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .rarity-stat-chip .rsc-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .rarity-stat-chip .rsc-bar-bg {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .rarity-stat-chip .rsc-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  /* rarity tints */
+  .rsc-lr   .rsc-label { color: #ff6060; }
+  .rsc-lr   .rsc-bar-fill { background: #cc1010; }
+  .rsc-ur   .rsc-label { color: var(--gold); }
+  .rsc-ur   .rsc-bar-fill { background: var(--gold); }
+  .rsc-ssr  .rsc-label { color: #c080f8; }
+  .rsc-ssr  .rsc-bar-fill { background: var(--purple); }
+  .rsc-sr   .rsc-label { color: #70b0ff; }
+  .rsc-sr   .rsc-bar-fill { background: var(--blue); }
+  .rsc-r    .rsc-label { color: #e8a060; }
+  .rsc-r    .rsc-bar-fill { background: var(--bronze); }
+  .rsc-c    .rsc-label { color: #888; }
+  .rsc-c    .rsc-bar-fill { background: #555; }
+
   /* ── COLLECTION LIST VIEW ── */
   .coll-toolbar {
     display: flex;
@@ -1317,6 +1375,32 @@
         <span class="section-title">Collection</span>
         <span id="deck-count" class="deck-count-badge">0 cards</span>
       </div>
+      <div class="rarity-stats-bar" id="rarity-stats-bar">
+        <div class="rarity-stat-chip rsc-lr" id="rsc-LR">
+          <div class="rsc-header"><span class="rsc-label">LR</span><span class="rsc-count" id="rsc-cnt-LR">0 / 4</span></div>
+          <div class="rsc-bar-bg"><div class="rsc-bar-fill" id="rsc-bar-LR" style="width:0%"></div></div>
+        </div>
+        <div class="rarity-stat-chip rsc-ur" id="rsc-UR">
+          <div class="rsc-header"><span class="rsc-label">UR</span><span class="rsc-count" id="rsc-cnt-UR">0 / …</span></div>
+          <div class="rsc-bar-bg"><div class="rsc-bar-fill" id="rsc-bar-UR" style="width:0%"></div></div>
+        </div>
+        <div class="rarity-stat-chip rsc-ssr" id="rsc-SSR">
+          <div class="rsc-header"><span class="rsc-label">SSR</span><span class="rsc-count" id="rsc-cnt-SSR">0 / …</span></div>
+          <div class="rsc-bar-bg"><div class="rsc-bar-fill" id="rsc-bar-SSR" style="width:0%"></div></div>
+        </div>
+        <div class="rarity-stat-chip rsc-sr" id="rsc-SR">
+          <div class="rsc-header"><span class="rsc-label">SR</span><span class="rsc-count" id="rsc-cnt-SR">0 / …</span></div>
+          <div class="rsc-bar-bg"><div class="rsc-bar-fill" id="rsc-bar-SR" style="width:0%"></div></div>
+        </div>
+        <div class="rarity-stat-chip rsc-r" id="rsc-R">
+          <div class="rsc-header"><span class="rsc-label">R</span><span class="rsc-count" id="rsc-cnt-R">0 / …</span></div>
+          <div class="rsc-bar-bg"><div class="rsc-bar-fill" id="rsc-bar-R" style="width:0%"></div></div>
+        </div>
+        <div class="rarity-stat-chip rsc-c" id="rsc-C">
+          <div class="rsc-header"><span class="rsc-label">C</span><span class="rsc-count" id="rsc-cnt-C">0 / …</span></div>
+          <div class="rsc-bar-bg"><div class="rsc-bar-fill" id="rsc-bar-C" style="width:0%"></div></div>
+        </div>
+      </div>
       <input id="coll-search" class="coll-search" type="text" placeholder="Search by title..." oninput="collPage=1;renderDeck()">
       <div class="coll-controls">
         <div class="coll-sort-btns">
@@ -1395,7 +1479,9 @@ let deck     = JSON.parse(localStorage.getItem('ucg_deck') || '[]').map(c => ({.
 let selected = null;
 let battle   = null;
 
-function save() { localStorage.setItem('ucg_deck', JSON.stringify(deck)); }
+function save() {
+  localStorage.setItem('ucg_deck', JSON.stringify(deck));
+}
 
 // ── TABS ───────────────────────────────────────────────────────────────
 function switchTab(id, el) {
@@ -1820,10 +1906,61 @@ function getFilteredCards() {
   return cards;
 }
 
+// ── RARITY POOL STATS ────────────────────────────────────────────────
+// Pool sizes: LR is always 4. Others are proportional slices of total wiki articles.
+// Rarity weight totals (excl LR which is fixed): UR=0.3, SSR=1.5, SR=8, R=25, C=65
+const RARITY_WEIGHTS_NOLR = {UR:0.3, SSR:1.5, SR:8, R:25, C:65};
+const WEIGHTS_NOLR_TOTAL  = Object.values(RARITY_WEIGHTS_NOLR).reduce((a,b)=>a+b,0);
+let wikiArticleCount = null; // fetched once
+
+async function fetchWikiArticleCount() {
+  if (wikiArticleCount !== null) return wikiArticleCount;
+  try {
+    const r = await fetch(`${API}?action=query&meta=siteinfo&siprop=statistics&format=json&origin=*`);
+    const d = await r.json();
+    wikiArticleCount = d?.query?.statistics?.articles || 35000;
+  } catch {
+    wikiArticleCount = 35000; // fallback estimate
+  }
+  return wikiArticleCount;
+}
+
+function rarityPoolSize(rarity, totalArticles) {
+  if (rarity === 'LR') return LR_CARDS.length; // exactly 4
+  const w = RARITY_WEIGHTS_NOLR[rarity] || 0;
+  return Math.round(totalArticles * w / WEIGHTS_NOLR_TOTAL);
+}
+
+async function updateRarityStats() {
+  const total = await fetchWikiArticleCount();
+  // Count unique titles per rarity in deck
+  const seen = {};
+  deck.forEach(c => {
+    const key = c.rarity + '::' + c.title;
+    if (!seen[key]) seen[key] = true;
+  });
+  const unique = {};
+  Object.keys(seen).forEach(k => {
+    const [r] = k.split('::');
+    unique[r] = (unique[r]||0) + 1;
+  });
+
+  ['LR','UR','SSR','SR','R','C'].forEach(r => {
+    const have = unique[r] || 0;
+    const pool = rarityPoolSize(r, total);
+    const pct  = Math.min(100, (have / pool) * 100).toFixed(2);
+    const el   = document.getElementById('rsc-cnt-' + r);
+    const bar  = document.getElementById('rsc-bar-' + r);
+    if (el)  el.textContent  = have + ' / ' + pool.toLocaleString();
+    if (bar) bar.style.width = pct + '%';
+  });
+}
+
 // ── DECK ───────────────────────────────────────────────────────────────
 function renderDeck() {
   const grid = document.getElementById('deck-grid');
   document.getElementById('deck-count').textContent = deck.length + ' cards';
+  updateRarityStats(); // async — updates bar chips in background
 
   if (!deck.length) {
     grid.innerHTML = '<p class="empty">Pull some packs to start your collection!</p>';
