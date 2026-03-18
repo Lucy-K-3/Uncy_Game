@@ -485,7 +485,7 @@
     text-decoration: none;
     display: block;
     transition: transform 0.12s ease, box-shadow 0.12s ease;
-    overflow: hidden;
+    overflow: visible;            /* allow star + dupe badge to overflow card edge */
     container-type: inline-size; /* enables cqi for .card-title */
   }
 
@@ -564,6 +564,12 @@
     text-shadow: 0 0 12px rgba(255,60,60,1), 0 0 24px rgba(255,0,0,0.6);
     z-index: 4;
     pointer-events: none;
+  }
+
+  /* Clip the metallicss canvas to the card shape */
+  .card > canvas.metal {
+    border-radius: 12px !important;
+    overflow: hidden !important;
   }
 
   /* Inner card body — flex column filling the whole frame */
@@ -707,10 +713,10 @@
   /* Favorite star on card corner */
   .card-star {
     position: absolute;
-    top: -8px;
-    left: -6px;
+    top: 2px;
+    left: 2px;
     font-size: 18px;
-    z-index: 4;
+    z-index: 10;
     pointer-events: none;
     line-height: 1;
     filter: drop-shadow(0 0 4px rgba(255,220,40,0.9));
@@ -722,15 +728,15 @@
   /* Merge badge — shows duplicate count */
   .card-dupe-badge {
     position: absolute;
-    bottom: -6px;
-    left: -6px;
+    bottom: 2px;
+    left: 2px;
     background: var(--purple);
     color: #fff;
     font-size: 9px;
     font-weight: 700;
     padding: 2px 6px;
     border-radius: 10px;
-    z-index: 4;
+    z-index: 10;
     pointer-events: none;
     letter-spacing: 0.5px;
     display: none;
@@ -1303,18 +1309,11 @@
 
   <!-- BATTLE -->
   <div id="screen-battle" class="screen">
-    <div id="battle-setup">
-      <div class="section-header" style="margin-bottom:12px">
-        <span class="section-title">Choose Your Fighter</span>
-      </div>
-      <div id="fighter-grid" class="fighter-grid">
-        <p class="empty">Pull some cards first!</p>
-      </div>
-      <button class="pull-btn" id="start-btn" onclick="startBattle()" disabled style="display:block;margin:0 auto">
-        ⚔️ Start Battle
-      </button>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px;text-align:center;padding:40px 20px">
+      <div style="font-size:56px">⚔️</div>
+      <p style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);letter-spacing:2px">Coming Soon</p>
+      <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6">Battle mode is under construction. Pull some cards and come back when it's ready.</p>
     </div>
-    <div id="battle-arena" style="display:none"></div>
   </div>
 </div>
 
@@ -1660,7 +1659,7 @@ function attachDrag(wrap) {
 function cardHTML(c) {
   const imageHTML = c.thumb
     ? `<div class="card-image"><img src="${c.thumb}" alt="${c.title}" loading="lazy"></div>`
-    : `<div class="card-image">${c.emoji}</div>`;
+    : `<div class="card-image"><img src="potato.webp" alt="Uncyclopedia" loading="lazy" style="opacity:0.55;filter:grayscale(0.3)"></div>`;
 
   const fullText = c.extract || '';
   const sentences = fullText.match(/[^.!?]+[.!?]+/g) || [];
