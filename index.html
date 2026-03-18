@@ -835,17 +835,20 @@
     letter-spacing: 1px;
   }
 
+  /* ── COLLECTION LIST VIEW ── */
   .coll-toolbar {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
 
   .coll-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .deck-count-badge {
@@ -869,7 +872,6 @@
     outline: none;
     transition: border-color 0.15s;
   }
-
   .coll-search:focus { border-color: rgba(201,162,39,0.5); }
   .coll-search::placeholder { color: var(--muted); }
 
@@ -877,13 +879,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-
-  .coll-sort-btns {
-    display: flex;
-    gap: 4px;
     flex-wrap: wrap;
   }
+
+  .coll-sort-btns { display: flex; gap: 4px; flex-wrap: wrap; }
 
   .sort-btn {
     padding: 5px 12px;
@@ -899,15 +898,10 @@
     cursor: pointer;
     transition: all 0.12s;
   }
-
   .sort-btn:hover { border-color: rgba(201,162,39,0.4); color: var(--text); }
   .sort-btn.active { background: rgba(201,162,39,0.15); border-color: var(--gold); color: var(--gold); }
 
-  .rarity-tabs {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
+  .rarity-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
 
   .rtab {
     padding: 4px 14px;
@@ -922,34 +916,107 @@
     cursor: pointer;
     transition: all 0.12s;
   }
-
   .rtab:hover { color: var(--text); }
-  .rtab.active { color: #111; }
-  .rtab.active          { background: #888;          border-color: #888; }
+  .rtab.active          { background: #888;          border-color: #888;          color: #111; }
   .rtab.lr.active       { background: #cc1010;       border-color: #ff4040;       color: #fff; text-shadow: 0 0 6px rgba(255,80,80,0.6); }
   .rtab.ur.active       { background: var(--gold);   border-color: var(--gold);   color: #1a1200; }
   .rtab.ssr.active      { background: var(--purple); border-color: var(--purple); color: #fff; }
   .rtab.sr.active       { background: var(--blue);   border-color: var(--blue);   color: #fff; }
   .rtab.r.active        { background: var(--bronze); border-color: var(--bronze); color: #fff; }
   .rtab.c.active        { background: #555;          border-color: #555;          color: #ccc; }
+  .rtab.fav.active      { background: #b8860b;       border-color: #b8860b;       color: #fff; }
 
-  /* ── DECK GRID ── */
-  .deck-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(var(--coll-card-w), 1fr));
-    gap: 16px;
-    justify-items: center;
+  /* Pagination bar */
+  .coll-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 4px 0 8px;
+  }
+  .page-arrow {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .page-arrow:hover { border-color: var(--gold); color: var(--gold); }
+  .page-arrow:disabled { opacity: 0.25; cursor: default; }
+  .page-info {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    min-width: 80px;
+    text-align: center;
   }
 
-  /* Collection cards — same 3:4 ratio, narrower width */
-  .deck-grid .card {
-    animation: none;
-    width: var(--coll-card-w);
-    min-width: var(--coll-card-w);
-    max-width: var(--coll-card-w);
+  /* List table */
+  .coll-list {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
   }
-  /* Prevent the anchor inside a collection wrapper from navigating */
-  .deck-grid div > a.card { pointer-events: none; }
+  .coll-list thead tr {
+    border-bottom: 2px solid var(--border);
+  }
+  .coll-list thead th {
+    padding: 6px 10px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+  .coll-list thead th.right { text-align: right; }
+  .coll-list tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .coll-list tbody tr:hover { background: rgba(255,255,255,0.03); }
+  .coll-list td {
+    padding: 9px 10px;
+    vertical-align: middle;
+  }
+  .coll-list td.right { text-align: right; }
+
+  /* Rarity pill in list */
+  .list-rarity {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    min-width: 32px;
+    text-align: center;
+  }
+  .list-rarity.LR  { background: #cc1010; color: #fff; }
+  .list-rarity.UR  { background: var(--gold); color: #1a1200; }
+  .list-rarity.SSR { background: var(--purple); color: #fff; }
+  .list-rarity.SR  { background: var(--blue); color: #fff; }
+  .list-rarity.R   { background: var(--bronze); color: #fff; }
+  .list-rarity.C   { background: #555; color: #ccc; }
+
+  .list-title { font-weight: 600; color: var(--text); line-height: 1.3; }
+  .list-type  { font-size: 11px; color: var(--muted); }
+  .list-stat  { font-weight: 700; color: var(--text); font-size: 14px; }
+  .list-cnt   { font-weight: 700; color: var(--purple); font-size: 13px; }
+  .list-fav   {
+    font-size: 15px; cursor: pointer; opacity: 0.35;
+    transition: opacity 0.1s, transform 0.1s;
+    user-select: none;
+  }
+  .list-fav:hover   { opacity: 0.7; transform: scale(1.15); }
+  .list-fav.starred { opacity: 1; }
 
   /* ── MODAL ── */
   .modal-backdrop {
@@ -1250,18 +1317,15 @@
         <span class="section-title">Collection</span>
         <span id="deck-count" class="deck-count-badge">0 cards</span>
       </div>
-      <!-- Search -->
-      <input id="coll-search" class="coll-search" type="text" placeholder="Search cards..." oninput="renderDeck()">
-      <!-- Controls row -->
+      <input id="coll-search" class="coll-search" type="text" placeholder="Search by title..." oninput="collPage=1;renderDeck()">
       <div class="coll-controls">
         <div class="coll-sort-btns">
-          <button class="sort-btn active" id="sort-none"  onclick="setSort('none',this)">Default</button>
-          <button class="sort-btn"        id="sort-atk"   onclick="setSort('atk',this)">ATK ↓</button>
-          <button class="sort-btn"        id="sort-def"   onclick="setSort('def',this)">DEF ↓</button>
-          <button class="sort-btn"        id="sort-hp"    onclick="setSort('hp',this)">HP ↓</button>
+          <button class="sort-btn active" id="sort-none" onclick="setSort('none',this)">Default</button>
+          <button class="sort-btn" id="sort-atk"  onclick="setSort('atk',this)">ATK ↓</button>
+          <button class="sort-btn" id="sort-def"  onclick="setSort('def',this)">DEF ↓</button>
+          <button class="sort-btn" id="sort-hp"   onclick="setSort('hp',this)">HP ↓</button>
         </div>
       </div>
-      <!-- Rarity filter tabs -->
       <div class="rarity-tabs">
         <button class="rtab active" onclick="setRarity('ALL',this)">All</button>
         <button class="rtab fav"    onclick="setRarity('FAV',this)">⭐ Faves</button>
@@ -1273,8 +1337,13 @@
         <button class="rtab c"      onclick="setRarity('C',this)">C</button>
       </div>
     </div>
-    <div id="deck-grid" class="deck-grid">
+    <div id="deck-grid">
       <p class="empty">Pull some packs to start your collection!</p>
+    </div>
+    <div class="coll-pagination" id="coll-pagination" style="display:none">
+      <button class="page-arrow" id="page-prev" onclick="collChangePage(-1)">&#8249;</button>
+      <span class="page-info" id="page-info">1 / 1</span>
+      <button class="page-arrow" id="page-next" onclick="collChangePage(1)">&#8250;</button>
     </div>
   </div>
 
@@ -1334,7 +1403,7 @@ function switchTab(id, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   el.classList.add('active');
-  if (id === 'deck')   renderDeck();
+  if (id === 'deck')   { collPage = 1; renderDeck(); }
   if (id === 'battle') renderBattleSetup();
 }
 
@@ -1709,9 +1778,15 @@ function cardHTML(c) {
 // ── COLLECTION STATE ───────────────────────────────────────────────────
 let collSort   = 'none';
 let collRarity = 'ALL';
+let collPage   = 1;
+const COLL_PAGE_SIZE = 50;
+
+// Rarity sort order for default sort
+const RARITY_RANK = {LR:0, UR:1, SSR:2, SR:3, R:4, C:5};
 
 function setSort(s, el) {
   collSort = s;
+  collPage = 1;
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   renderDeck();
@@ -1719,46 +1794,107 @@ function setSort(s, el) {
 
 function setRarity(r, el) {
   collRarity = r;
+  collPage   = 1;
   document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   renderDeck();
 }
 
+function collChangePage(dir) {
+  const filtered = getFilteredCards();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / COLL_PAGE_SIZE));
+  collPage = Math.min(totalPages, Math.max(1, collPage + dir));
+  renderDeck();
+}
+
+function getFilteredCards() {
+  const search = (document.getElementById('coll-search')?.value || '').toLowerCase();
+  let cards = [...deck];
+  if (collRarity === 'FAV') cards = cards.filter(c => c.favorite);
+  else if (collRarity !== 'ALL') cards = cards.filter(c => c.rarity === collRarity);
+  if (search) cards = cards.filter(c => c.title.toLowerCase().includes(search));
+  if (collSort === 'atk')  cards.sort((a,b) => b.atk - a.atk);
+  else if (collSort === 'def') cards.sort((a,b) => b.def - a.def);
+  else if (collSort === 'hp')  cards.sort((a,b) => b.hp  - a.hp);
+  else cards.sort((a,b) => (RARITY_RANK[a.rarity]??9) - (RARITY_RANK[b.rarity]??9));
+  return cards;
+}
+
 // ── DECK ───────────────────────────────────────────────────────────────
 function renderDeck() {
-  const grid    = document.getElementById('deck-grid');
-  const search  = (document.getElementById('coll-search')?.value || '').toLowerCase();
+  const grid = document.getElementById('deck-grid');
   document.getElementById('deck-count').textContent = deck.length + ' cards';
 
   if (!deck.length) {
     grid.innerHTML = '<p class="empty">Pull some packs to start your collection!</p>';
+    document.getElementById('coll-pagination').style.display = 'none';
     return;
   }
 
-  let cards = [...deck];
+  const allCards   = getFilteredCards();
+  const totalPages = Math.max(1, Math.ceil(allCards.length / COLL_PAGE_SIZE));
+  collPage = Math.min(totalPages, Math.max(1, collPage));
 
-  // Filter
-  if (collRarity === 'FAV') cards = cards.filter(c => c.favorite);
-  else if (collRarity !== 'ALL') cards = cards.filter(c => c.rarity === collRarity);
+  const pageCards = allCards.slice((collPage-1)*COLL_PAGE_SIZE, collPage*COLL_PAGE_SIZE);
 
-  // Search
-  if (search) cards = cards.filter(c => c.title.toLowerCase().includes(search));
-
-  // Sort
-  if (collSort === 'atk') cards.sort((a,b) => b.atk - a.atk);
-  else if (collSort === 'def') cards.sort((a,b) => b.def - a.def);
-  else if (collSort === 'hp')  cards.sort((a,b) => b.hp  - a.hp);
-
-  if (!cards.length) {
+  if (!pageCards.length) {
     grid.innerHTML = '<p class="empty">No cards match.</p>';
+    document.getElementById('coll-pagination').style.display = 'none';
     return;
   }
 
-  grid.innerHTML = cards.map(c => {
-    const html = cardHTML(c);
-    return `<div onclick="openModal(${c.id});event.preventDefault();" style="cursor:pointer">${html}</div>`;
-  }).join('');
-  applyMetallicss();
+  // Count dupes across full deck
+  const dupeCounts = {};
+  deck.forEach(c => { dupeCounts[c.title] = (dupeCounts[c.title]||0)+1; });
+
+  grid.innerHTML = `
+    <table class="coll-list">
+      <thead>
+        <tr>
+          <th style="width:44px">Rarity</th>
+          <th style="width:28px"></th>
+          <th>Title</th>
+          <th class="right" style="width:64px">ATK</th>
+          <th class="right" style="width:64px">DEF</th>
+          <th class="right" style="width:52px">HP</th>
+          <th class="right" style="width:44px">Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${pageCards.map(c => {
+          const cnt   = dupeCounts[c.title] || 1;
+          const fav   = c.favorite ? 'starred' : '';
+          const merge = c.merged ? ` <span style="font-size:10px;color:var(--purple)">+${c.mergeLevel||1}</span>` : '';
+          return `<tr onclick="openModal(${c.id})">
+            <td><span class="list-rarity ${c.rarity}">${c.rarity}</span></td>
+            <td><span class="list-fav ${fav}" onclick="event.stopPropagation();quickFav(${c.id},this)">★</span></td>
+            <td>
+              <div class="list-title">${c.title}${merge}</div>
+              <div class="list-type">${c.type}</div>
+            </td>
+            <td class="right list-stat">${c.atk}</td>
+            <td class="right list-stat">${c.def}</td>
+            <td class="right list-stat">${c.hp}</td>
+            <td class="right list-cnt">${cnt > 1 ? '×'+cnt : '×1'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+
+  // Pagination
+  const pag = document.getElementById('coll-pagination');
+  pag.style.display = totalPages > 1 ? 'flex' : 'none';
+  document.getElementById('page-info').textContent = collPage + ' / ' + totalPages;
+  document.getElementById('page-prev').disabled = collPage <= 1;
+  document.getElementById('page-next').disabled = collPage >= totalPages;
+}
+
+function quickFav(id, el) {
+  const c = deck.find(d => d.id == id);
+  if (!c) return;
+  c.favorite = !c.favorite;
+  save();
+  el.classList.toggle('starred', c.favorite);
 }
 
 // ── CARD VIEWER MODAL ──────────────────────────────────────────────────
