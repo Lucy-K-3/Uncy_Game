@@ -23,10 +23,10 @@
     --green:    #3AC87B;
     --radius:   12px;
 
-    /* Card size tokens — 3:4 ratio enforced via aspect-ratio on .card */
-    --card-w:       240px;   /* pull screen + stack */
-    --coll-card-w:  180px;   /* collection grid */
-    --modal-card-w: 310px;   /* modal viewer */
+    /* Card size tokens  */
+    --card-w:       240px;
+    --coll-card-w:  180px;/
+    --modal-card-w: 310px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,7 +38,6 @@
     min-height: 100vh;
   }
 
-  /* ── LAYOUT ── */
   #app { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
 
   header {
@@ -58,7 +57,6 @@
 
   .subtitle { font-size: 14px; color: var(--muted); letter-spacing: 0.5px; }
 
-  /* ── TABS ── */
   .tabs {
     display: flex;
     gap: 4px;
@@ -92,9 +90,6 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
-  /* ── PACK SCREEN ── */
-
-  /* State A: the bag sitting there waiting */
   #gacha-idle {
     display: flex;
     flex-direction: column;
@@ -151,7 +146,6 @@
     text-transform: uppercase;
   }
 
-  /* State B: loading — potato shakes */
   #gacha-loading-potato {
     display: none;
     flex-direction: column;
@@ -162,7 +156,6 @@
     position: relative;
   }
 
-  /* The shaking potato container */
   .potato-shake-wrap {
     position: relative;
     width: 260px;
@@ -172,7 +165,6 @@
     justify-content: center;
   }
 
-  /* Two halves for the split */
   .potato-half {
     position: absolute;
     width: 240px;
@@ -219,7 +211,6 @@
     animation: potato-violent-shake 0.35s ease-in-out infinite;
   }
 
-  /* Top half flies up, bottom half drops down */
   @keyframes split-top {
     0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
     100% { transform: translateY(-120px) rotate(-20deg); opacity: 0; }
@@ -251,13 +242,13 @@
     50% { opacity: 1; }
   }
 
-  /* Card stack positions — right fan for unseen, left fan for seen */
+  /* State A = Card stack to RIGHT */
   .stack-card-wrap.pos-0  { transform: translate(0,0) rotate(0deg); z-index: 10; }
   .stack-card-wrap.pos-r1 { transform: translate(12px, 8px) rotate(4deg) scale(0.97);  z-index: 9;  opacity: 0.9; }
   .stack-card-wrap.pos-r2 { transform: translate(22px,15px) rotate(7deg) scale(0.94);  z-index: 8;  opacity: 0.8; }
   .stack-card-wrap.pos-r3 { transform: translate(30px,21px) rotate(9deg) scale(0.91);  z-index: 7;  opacity: 0.7; }
   .stack-card-wrap.pos-r4 { transform: translate(36px,26px) rotate(11deg) scale(0.88); z-index: 6;  opacity: 0.6; }
-  /* Cards to the LEFT (already seen) */
+  /* State B = Cards to the LEFT */
   .stack-card-wrap.pos-l1 { transform: translate(-12px, 8px) rotate(-4deg) scale(0.97);  z-index: 9;  opacity: 0.9; }
   .stack-card-wrap.pos-l2 { transform: translate(-22px,15px) rotate(-7deg) scale(0.94);  z-index: 8;  opacity: 0.8; }
   .stack-card-wrap.pos-l3 { transform: translate(-30px,21px) rotate(-9deg) scale(0.91);  z-index: 7;  opacity: 0.7; }
@@ -280,7 +271,7 @@
     text-align: center;
   }
 
-  /* Outer wrapper — positions arrows to either side of the scene */
+  /* puts arrows to the left and right of card stack */
   .stack-scene-row {
     position: relative;
     display: flex;
@@ -288,7 +279,6 @@
     justify-content: center;
   }
 
-  /* The card stack area — sized to fit --card-w cards with fan room on both sides */
   .stack-scene {
     position: relative;
     width: 380px;
@@ -296,10 +286,9 @@
     perspective: 900px;
   }
 
-  /* Each card slot in the stack — centered with room for left+right fans */
   .stack-card-wrap {
     position: absolute;
-    left: 70px;   /* offset so card center is in middle of 380px scene */
+    left: 70px;
     top: 0;
     width: 240px;
     bottom: 0;
@@ -310,14 +299,13 @@
 
   .stack-card-wrap:active { cursor: grabbing; }
 
-  /* While dragging the top card */
   .stack-card-wrap.dragging {
     transition: none;
     cursor: grabbing;
     z-index: 20;
   }
 
-  /* Arrows — tall pills flanking the stack */
+  /* the arrows themselves */
   .stack-arrow {
     width: 40px;
     height: 120px;
@@ -343,8 +331,7 @@
     letter-spacing: 1px;
     text-align: center;
   }
-
-  /* Bottom action buttons */
+  
   .stack-actions {
     display: flex;
     gap: 12px;
@@ -352,7 +339,6 @@
     justify-content: center;
   }
 
-  /* Explosion canvas — fixed fullscreen */
   #explode-stage {
     position: fixed;
     inset: 0;
@@ -461,7 +447,7 @@
 
   .cleanse-btn:hover { border-color: var(--red); color: var(--red); background: rgba(200,58,58,0.08); }
 
-  /* ── CARDS ── */
+  /* le cardz─ */
   .cards-reveal {
     display: flex;
     flex-wrap: wrap;
@@ -470,7 +456,6 @@
     padding: 8px 0 16px;
   }
 
-  /* Outer frame — always 3:4, card-inner fills the frame */
   .card {
     width: var(--card-w);
     min-width: var(--card-w);
@@ -485,8 +470,8 @@
     text-decoration: none;
     display: block;
     transition: transform 0.12s ease, box-shadow 0.12s ease;
-    overflow: visible;            /* allow star + dupe badge to overflow card edge */
-    container-type: inline-size; /* enables cqi for .card-title */
+    overflow: visible;
+    container-type: inline-size;
   }
 
   @keyframes cardReveal {
@@ -494,9 +479,6 @@
     to   { opacity: 1; transform: perspective(600px) rotateY(0deg) scale(1); }
   }
 
-  /* Chrome sheen handled by metallicss.js — no ::after needed */
-
-  /* UR ribbon animation */
   @keyframes ribbon-sweep {
     0%   { transform: translateX(-120%) rotate(-25deg); opacity: 0; }
     10%  { opacity: 1; }
@@ -510,10 +492,6 @@
     100% { opacity: 0; }
   }
 
-  /* Rarity gradients — metallic style */
-  /* Rarity frames — solid background-color so metallicss can read the tint.
-     The gradient lives on .card-inner (see below). --metal:neutral on all
-     means metallicss tints the canvas canvas with this exact color. */
   .card.rarity-C {
     background-color: #505050;
     box-shadow: 0 4px 18px rgba(0,0,0,0.55);
@@ -549,7 +527,7 @@
     z-index: 4;
     pointer-events: none;
   }
-  /* LR — legendary red, rarer than UR */
+
   .card.rarity-LR {
     background-color: #c01010;
     box-shadow: 0 6px 40px rgba(220,30,30,0.75), 0 0 60px rgba(200,0,0,0.3);
@@ -566,13 +544,11 @@
     pointer-events: none;
   }
 
-  /* Clip the metallicss canvas to the card shape */
   .card > canvas.metal {
     border-radius: 12px !important;
     overflow: hidden !important;
   }
 
-  /* Inner card body — flex column filling the whole frame */
   .card-inner {
     background: #111008;
     border-radius: 8px;
@@ -580,9 +556,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;   /* fill the 3:4 frame */
+    height: 100%;
   }
-  /* Per-rarity inner gradient — visible as a subtle top glow behind the image */
+
   .rarity-C   .card-inner { background: linear-gradient(170deg, #2a2a2a 0%, #111008 35%); }
   .rarity-R   .card-inner { background: linear-gradient(170deg, #3a1a08 0%, #111008 35%); }
   .rarity-SR  .card-inner { background: linear-gradient(170deg, #081830 0%, #111008 35%); }
@@ -590,7 +566,6 @@
   .rarity-UR  .card-inner { background: linear-gradient(170deg, #2a1800 0%, #111008 35%); }
   .rarity-LR  .card-inner { background: linear-gradient(170deg, #2a0000 0%, #111008 35%); }
 
-  /* Rarity + title bar */
   .card-header {
     display: flex;
     align-items: center;
@@ -624,16 +599,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* Fallback for browsers without cqi: use vw-relative shrink */
   @supports not (font-size: 1cqi) {
     .card-title { font-size: 13px; }
   }
 
-  /* Image area — grows to fill available space between header and stats */
+
   .card-image {
     width: 100%;
-    flex: 1 1 0;      /* grow to fill, shrink if needed */
-    min-height: 0;    /* allow shrinking below content size */
+    flex: 1 1 0;
+    min-height: 0;
     background: #161210;
     overflow: hidden;
     display: flex;
@@ -645,12 +619,11 @@
   .card-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;     /* fills frame, crops if needed — no letterbox */
+    object-fit: cover;
     object-position: center top;
     display: block;
   }
 
-  /* Excerpt — 3 lines, no fixed height */
   .card-excerpt {
     padding: 6px 10px 7px;
     font-size: 10px;
@@ -664,9 +637,6 @@
     -webkit-box-orient: vertical;
   }
 
-  /* .card-flavour removed */
-
-  /* Stats bar — 3 columns now */
   .card-stats {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -710,7 +680,7 @@
     line-height: 1;
   }
 
-  /* Favorite star on card corner */
+  /* Fav star on corner */
   .card-star {
     position: absolute;
     top: 2px;
@@ -725,7 +695,7 @@
 
   .card.favorited .card-star { display: block; }
 
-  /* Merge badge — shows duplicate count */
+  /* Merge badge */
   .card-dupe-badge {
     position: absolute;
     bottom: 2px;
@@ -805,7 +775,7 @@
   .merge-candidate .mc-rarity { font-size: 10px; color: var(--muted); }
   .merge-candidate .mc-stats { font-size: 10px; color: var(--gold); }
 
-  /* Type tags */
+  /* Type shit tags */
   .card-tags {
     display: flex;
     gap: 4px;
@@ -826,7 +796,7 @@
     text-transform: uppercase;
   }
 
-  /* ── COLLECTION TOOLBAR ── */
+  /* COLLECTION */
   .section-title {
     font-size: 13px;
     font-weight: 700;
@@ -835,7 +805,7 @@
     letter-spacing: 1px;
   }
 
-  /* ── RARITY STATS BAR ── */
+  /* RARITY STATS */
   .rarity-stats-bar {
     display: flex;
     gap: 6px;
@@ -893,7 +863,7 @@
   .rsc-c    .rsc-label { color: #888; }
   .rsc-c    .rsc-bar-fill { background: #555; }
 
-  /* ── COLLECTION LIST VIEW ── */
+  /* COLLECTION LIST */
   .coll-toolbar {
     display: flex;
     flex-direction: column;
@@ -1046,7 +1016,7 @@
   }
   .coll-list td.right { text-align: right; }
 
-  /* Rarity pill in list */
+  /* Rarity thing in list*/
   .list-rarity {
     display: inline-block;
     font-size: 10px;
@@ -1076,7 +1046,7 @@
   .list-fav:hover   { opacity: 0.7; transform: scale(1.15); }
   .list-fav.starred { opacity: 1; }
 
-  /* ── MODAL ── */
+  /* MODAL */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -1126,8 +1096,6 @@
 
   .modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
-  /* Card inside modal — full width, no animation, not clickable */
-  /* Card inside modal — fixed width, no animation, not clickable */
   .modal-box .card {
     width: var(--modal-card-w);
     min-width: var(--modal-card-w);
@@ -1140,7 +1108,6 @@
     --card-flavour-h: auto;
   }
 
-  /* Modal card — slightly larger text, more excerpt lines */
   .modal-box .card-excerpt { font-size: 11px; -webkit-line-clamp: 6; }
   .modal-box .stat-val { font-size: 30px; }
   .modal-box .card-title { font-size: 15px; }
@@ -1167,7 +1134,7 @@
 
   .modal-link-btn:hover { background: var(--gold-lt); }
 
-  /* ── BATTLE ── */
+  /* BATTLE - still work in progress, this kinda just prevents it from doing anything at all */
   .fighter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -1204,7 +1171,7 @@
   .fighter-slot .fs-name { font-size: 11px; font-weight: 700; line-height: 1.2; }
   .fighter-slot .fs-hp { font-size: 11px; color: var(--gold); }
 
-  /* Battle arena */
+  /* Battle stage or arena */
   .arena { display: flex; flex-direction: column; gap: 14px; }
 
   .combatant {
@@ -1292,7 +1259,7 @@
   .battle-btn.danger { border-color: var(--red); color: var(--red); }
   .battle-btn.danger:hover { background: var(--red); color: #fff; }
 
-  /* ── UTIL ── */
+  /* UTILITIES add or subtract as needed */
   .empty { text-align: center; color: var(--muted); padding: 50px 0; font-size: 15px; grid-column: 1/-1; }
   .loading { text-align: center; padding: 24px; color: var(--muted); font-size: 14px; }
 
@@ -1315,48 +1282,48 @@
 <body>
 <div id="app">
   <header>
-    <h1>UnCycloGacha</h1>
-    <p class="subtitle">Pull cards from the depths of Uncyclopedia &mdash; the content-free encyclopedia</p>
+    <h1>UncYclO</h1>
+    <p class="subtitle">Obtain cards from the depths of Uncyclopedia</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('gacha',this)">🎴 Pull</button>
-    <button class="tab" onclick="switchTab('deck',this)">📦 Collection</button>
-    <button class="tab" onclick="switchTab('battle',this)">⚔️ Battle</button>
+    <button class="tab active" onclick="switchTab('gacha',this)">Pull Cards</button>
+    <button class="tab" onclick="switchTab('deck',this)">My Collection</button>
+    <button class="tab" onclick="switchTab('battle',this)">WIP Battle</button>
   </div>
 
-  <!-- PULL -->
+  <!-- PULL CARD -->
   <div id="screen-gacha" class="screen active">
 
-    <!-- State A: idle potato -->
+    <!-- State A: the untato is untouched -->
     <div id="gacha-idle">
       <div class="bag-wrap" onclick="startPull()" id="bag-wrap">
         <div class="bag-pulse"></div>
         <img src="potato.webp" class="bag-svg" alt="Uncyclopedia Potato" draggable="false">
       </div>
-      <p class="bag-hint">Tap the potato to pull 5 cards</p>
-      <button class="cleanse-btn" onclick="cleanseCards()">🗑️ Cleanse Collection (Dev)</button>
+      <p class="bag-hint">Tap the untato to pull 5 cards</p>
+      <button class="cleanse-btn" onclick="cleanseCards()">DELETE COLLECTION (Dev button)</button>
     </div>
 
-    <!-- State B: shaking/splitting potato loading screen -->
+    <!-- State B: the untato has been touched! proceeds to shake -->
     <div id="gacha-loading-potato" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:20px;">
       <div class="potato-shake-wrap" id="potato-shake-wrap">
         <img src="potato.webp" class="potato-half potato-half-top" id="potato-top" alt="" draggable="false">
         <img src="potato.webp" class="potato-half potato-half-bottom" id="potato-bottom" alt="" draggable="false">
       </div>
-      <p class="potato-loading-text">Yoinking cards...</p>
+      <p class="potato-loading-text">Consulting Sophia...</p>
     </div>
 
-    <!-- State C: card stack -->
+    <!-- State C: all the cards fan out -->
     <div id="gacha-stack">
-      <p class="stack-hint">Drag or use arrows</p>
+      <p class="stack-hint">Drag, or use arrows</p>
       <div class="stack-scene-row">
         <button class="stack-arrow" id="stack-prev" onclick="stackNav(-1)">&#8249;</button>
         <div class="stack-scene" id="stack-scene"></div>
         <button class="stack-arrow" id="stack-next" onclick="stackNav(1)">&#8250;</button>
       </div>
       <span class="stack-counter" id="stack-counter">1 / 5</span>
-      <button class="pull-btn" onclick="resetToIdle()" style="padding:10px 28px;font-size:14px">← Back to Untato</button>
+      <button class="pull-btn" onclick="resetToIdle()" style="padding:10px 28px;font-size:14px">Return to Untato</button>
     </div>
 
     <div id="pull-error" class="error" style="display:none"></div>
@@ -1412,7 +1379,7 @@
       </div>
       <div class="rarity-tabs">
         <button class="rtab active" onclick="setRarity('ALL',this)">All</button>
-        <button class="rtab fav"    onclick="setRarity('FAV',this)">⭐ Faves</button>
+        <button class="rtab fav"    onclick="setRarity('FAV',this)">Favorites</button>
         <button class="rtab lr"     onclick="setRarity('LR',this)">LR</button>
         <button class="rtab ur"     onclick="setRarity('UR',this)">UR</button>
         <button class="rtab ssr"    onclick="setRarity('SSR',this)">SSR</button>
@@ -1422,7 +1389,7 @@
       </div>
     </div>
     <div id="deck-grid">
-      <p class="empty">Pull some packs to start your collection!</p>
+      <p class="empty">Pull some packs to start the collection!</p>
     </div>
     <div class="coll-pagination" id="coll-pagination" style="display:none">
       <button class="page-arrow" id="page-prev" onclick="collChangePage(-1)">&#8249;</button>
@@ -1437,11 +1404,11 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
       <div id="modal-card-wrap"></div>
       <div class="modal-actions">
-        <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">☆ Favorite</button>
-        <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">⚗️ Merge</button>
+        <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">Favorite</button>
+        <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">Merge</button>
       </div>
       <a id="modal-link" href="#" target="_blank" rel="noopener" class="modal-link-btn">
-        Open on Uncyclopedia ↗
+        Open in Uncyclopedia
       </a>
     </div>
   </div>
@@ -1451,8 +1418,8 @@
     <div class="modal-box" style="max-width:480px;width:90%">
       <button class="modal-close" onclick="closeMergeModal()">✕</button>
       <div style="width:100%">
-        <p style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);text-align:center;margin-bottom:4px">⚗️ Merge Cards</p>
-        <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:16px">Sacrifice 2 other cards of the same rarity — your base card advances one tier (+10% stats)</p>
+        <p style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);text-align:center;margin-bottom:4px">Merge Cards</p>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:16px">Sacrifice 2 other cards of the same rarity. your base card advances one tier (+10% stats)</p>
         <div id="merge-slots" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px"></div>
         <div id="merge-candidates" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;max-height:260px;overflow-y:auto;padding:4px"></div>
         <button class="pull-btn" id="merge-confirm-btn" onclick="confirmMerge()" disabled style="display:block;margin:16px auto 0;opacity:0.4">Merge (select 2 sacrifices)</button>
@@ -1460,21 +1427,21 @@
     </div>
   </div>
 
-  <!-- BATTLE -->
+  <!-- BATTLE does not work, ignore tbh -->
   <div id="screen-battle" class="screen">
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px;text-align:center;padding:40px 20px">
-      <div style="font-size:56px">⚔️</div>
+      <div style="font-size:56px">X</div>
       <p style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);letter-spacing:2px">Coming Soon</p>
-      <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6">Battle mode is under construction. Pull some cards and come back when it's ready.</p>
+      <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6">Battle mode fking sucks rn. Pull some cards and come back when it's ready.</p>
     </div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ─────────────────────────────────────────────────────────────
+// CONFIG
 const API = 'https://en.uncyclopedia.co/w/api.php';
 
-// ── STATE ──────────────────────────────────────────────────────────────
+// STATE
 let deck     = JSON.parse(localStorage.getItem('ucg_deck') || '[]').map(c => ({...c, maxHp: c.maxHp || c.hp}));
 let selected = null;
 let battle   = null;
@@ -1483,7 +1450,7 @@ function save() {
   localStorage.setItem('ucg_deck', JSON.stringify(deck));
 }
 
-// ── TABS ───────────────────────────────────────────────────────────────
+// TABS
 function switchTab(id, el) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1493,7 +1460,7 @@ function switchTab(id, el) {
   if (id === 'battle') renderBattleSetup();
 }
 
-// ── UNCYCLOPEDIA API ───────────────────────────────────────────────────
+// UNCYCLOPEDIA API (this is key!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 async function fetchRandom(n = 5) {
   const url = `${API}?action=query&list=random&rnnamespace=0&rnlimit=${n}&format=json&origin=*`;
   const r = await fetch(url);
@@ -1513,11 +1480,11 @@ async function fetchDetails(titles) {
   return Object.values(d.query.pages);
 }
 
-// ── CARD GENERATION ────────────────────────────────────────────────────
+// CARD GENERATION
 const RARITIES  = [{t:'LR',w:0.05},{t:'UR',w:0.3},{t:'SSR',w:1.5},{t:'SR',w:8},{t:'R',w:25},{t:'C',w:65}];
-const LR_CARDS  = ['Oscar Wilde','Uncyclopedia','Sophia','Fisher Price']; // the only LR cards
-const TYPES     = ['Meme','Stub','Satire','Parody','Nonsense','Propaganda','Vanity','Featured','Conspiracy','Absurdist'];
-const EMOJIS    = ['🐧','🤡','🎩','🌮','🦆','🎭','🏛️','📰','🚀','💀','🤖','🧀','👑','🎪','🦄','🐸','🦖','🍕','🌵','🔮','🦑','🛸','🧲','🏴‍☠️','🧸'];
+const LR_CARDS  = ['Oscar Wilde','Uncyclopedia','Sophia','Fisher Price']; //dictates which cards are hardcoded as LR (the lucky few!!!!)
+const TYPES     = ['Meme','Stub','Satire','ICU','Nonsense','Propaganda','Vanity','Featured','Conspiracy','Dogpoo'];
+const EMOJIS    = ['X'];
 
 function rollRarity() {
   const tot = RARITIES.reduce((s,r) => s + r.w, 0);
@@ -1529,7 +1496,7 @@ function rollRarity() {
 function makeCard(page, forcedRarity) {
   let rarity = forcedRarity || rollRarity();
 
-  // LR cards have fixed titles — override the page if we rolled LR
+  // LR cards have fixed titles. override the page if we rolled LR or similar
   if (rarity === 'LR' && !LR_CARDS.includes(page?.title)) {
     const lrTitle = LR_CARDS[Math.floor(Math.random() * LR_CARDS.length)];
     page = { ...(page || {}), title: lrTitle, pageid: page?.pageid || Math.abs(lrTitle.charCodeAt(0) * 137) };
@@ -1561,9 +1528,9 @@ function makeCard(page, forcedRarity) {
   };
 }
 
-// ── GACHA SCREEN STATE ────────────────────────────────────────────────
-let stackCards  = [];   // current pull of 5 cards
-let stackIndex  = 0;    // which card is on top
+// GACHA SCREEN STATE
+let stackCards  = [];
+let stackIndex  = 0;
 
 function showState(s) {
   document.getElementById('gacha-idle').style.display           = s === 'idle'  ? 'flex'  : 'none';
@@ -1581,7 +1548,7 @@ function resetToIdle() {
   showState('idle');
 }
 
-// ── BAG EXPLOSION ─────────────────────────────────────────────────────
+// UNTATO EXPLOSION
 function playExplosion(onDone) {
   const canvas = document.getElementById('explode-stage');
   canvas.width  = window.innerWidth;
@@ -1589,7 +1556,7 @@ function playExplosion(onDone) {
   canvas.style.display = 'block';
   const ctx = canvas.getContext('2d');
 
-  // Find potato image position on screen to explode from its center
+  // Find untato image position on screen, then explode from center of untato
   const potatoEl = document.querySelector('#bag-wrap img.bag-svg') || document.querySelector('.bag-wrap');
   const bagR  = potatoEl ? potatoEl.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2, width:0, height:0};
   const cx = bagR.left + bagR.width  / 2;
@@ -1615,7 +1582,7 @@ function playExplosion(onDone) {
     };
   });
 
-  // Big flash
+  // Yuge flash
   let flash = 1.0;
   let t = 0;
 
@@ -1665,9 +1632,9 @@ function playExplosion(onDone) {
   frame();
 }
 
-// ── PACK OPENING ───────────────────────────────────────────────────────
+// PACK OPENING ANIMATION
 async function startPull() {
-  // Show shaking potato as loading screen
+  // Show shaking untato as loading screen while API fetch goes through and cards are generated
   showState('shake');
   const shakeWrap = document.getElementById('potato-shake-wrap');
   shakeWrap.classList.remove('splitting');
@@ -1687,9 +1654,9 @@ async function startPull() {
     deck.push(...cards);
     save();
 
-    // Cards ready — stop shaking, trigger the split
+    // Cards ready! stop shaking and then split in half
     shakeWrap.classList.remove('shaking');
-    void shakeWrap.offsetWidth; // force reflow so animation restarts
+    void shakeWrap.offsetWidth;
     shakeWrap.classList.add('splitting');
 
     const hasUR = cards.some(c => c.rarity === 'UR');
@@ -1697,7 +1664,7 @@ async function startPull() {
     if (hasLR) playLRAnimation();
     else if (hasUR) playURAnimation();
 
-    // Wait for animation then reveal stack
+    // Wait for animation to end, then reveal stack
     const animDelay = hasLR ? 2400 : hasUR ? 2000 : 540;
     setTimeout(() => {
       stackCards = cards;
@@ -1710,11 +1677,11 @@ async function startPull() {
     showState('idle');
     const errEl = document.getElementById('pull-error');
     errEl.style.display = 'block';
-    errEl.innerHTML = '⚠️ ' + err.message + '<br><small style="color:var(--muted)">Check console for details.</small>';
+    errEl.innerHTML = 'NAUGHTY ERROR' + err.message + '<br><small style="color:var(--muted)">Check console for details.</small>';
     console.error(err);
   }
 }
-// ── CARD STACK ─────────────────────────────────────────────────────────
+// CARD STACK
 function buildStack() {
   showState('stack');
   const scene = document.getElementById('stack-scene');
@@ -1726,7 +1693,6 @@ function buildStack() {
     wrap.className = 'stack-card-wrap';
     wrap.dataset.idx = i;
     wrap.innerHTML = cardHTML(stackCards[i]);
-    // Remove href so clicking card in stack doesn't navigate
     const a = wrap.querySelector('a.card');
     if (a) { a.removeAttribute('href'); a.style.cursor = 'default'; }
     scene.appendChild(wrap);
@@ -1742,14 +1708,14 @@ function updateStackPositions() {
   const wraps = document.querySelectorAll('#stack-scene .stack-card-wrap');
   wraps.forEach(w => {
     const i   = parseInt(w.dataset.idx);
-    const rel = i - stackIndex; // relative: 0=top, >0=right fan (unseen), <0=left fan (seen)
+    const rel = i - stackIndex;
     w.className = 'stack-card-wrap';
     if (rel === 0) {
       w.classList.add('pos-0');
     } else if (rel > 0 && rel <= 4) {
-      w.classList.add(`pos-r${rel}`);  // unseen cards fan RIGHT
+      w.classList.add(`pos-r${rel}`); // "unseen" cards RIGHT
     } else if (rel < 0 && rel >= -4) {
-      w.classList.add(`pos-l${-rel}`); // seen cards fan LEFT
+      w.classList.add(`pos-l${-rel}`); // "seen" cards LEFT
     } else {
       w.classList.add('pos-gone');
     }
@@ -1770,12 +1736,11 @@ function stackNav(dir) {
   updateStackCounter();
 }
 
-// ── DRAG TO SWIPE ──────────────────────────────────────────────────────
+// DRAG TO SWIPE (works best on iPad but fine on pc)
 function attachDrag(wrap) {
   let startX = 0, startY = 0, dx = 0, dragging = false;
 
   function onDown(e) {
-    // Only respond if this is the top card (pos-0)
     if (!wrap.classList.contains('pos-0')) return;
     dragging = true;
     const pt = e.touches ? e.touches[0] : e;
@@ -1861,13 +1826,13 @@ function cardHTML(c) {
     </a>`;
 }
 
-// ── COLLECTION STATE ───────────────────────────────────────────────────
+// COLLECTION STATE
 let collSort   = 'none';
 let collRarity = 'ALL';
 let collPage   = 1;
 const COLL_PAGE_SIZE = 50;
 
-// Rarity sort order for default sort
+// Rarity sort order when choosing default (i think)
 const RARITY_RANK = {LR:0, UR:1, SSR:2, SR:3, R:4, C:5};
 
 function setSort(s, el) {
@@ -1906,12 +1871,10 @@ function getFilteredCards() {
   return cards;
 }
 
-// ── RARITY POOL STATS ────────────────────────────────────────────────
-// Pool sizes: LR is always 4. Others are proportional slices of total wiki articles.
-// Rarity weight totals (excl LR which is fixed): UR=0.3, SSR=1.5, SR=8, R=25, C=65
+// rarity pool stats
 const RARITY_WEIGHTS_NOLR = {UR:0.3, SSR:1.5, SR:8, R:25, C:65};
 const WEIGHTS_NOLR_TOTAL  = Object.values(RARITY_WEIGHTS_NOLR).reduce((a,b)=>a+b,0);
-let wikiArticleCount = null; // fetched once
+let wikiArticleCount = null;
 
 async function fetchWikiArticleCount() {
   if (wikiArticleCount !== null) return wikiArticleCount;
@@ -1920,20 +1883,19 @@ async function fetchWikiArticleCount() {
     const d = await r.json();
     wikiArticleCount = d?.query?.statistics?.articles || 35000;
   } catch {
-    wikiArticleCount = 35000; // fallback estimate
+    wikiArticleCount = 35000; // fallback estimate if it can't actually get all articles. testing seems to show it gets most if not all.
   }
   return wikiArticleCount;
 }
 
 function rarityPoolSize(rarity, totalArticles) {
-  if (rarity === 'LR') return LR_CARDS.length; // exactly 4
+  if (rarity === 'LR') return LR_CARDS.length; // makes it so there are 4 hardcoded LR cards hehe, good luck!
   const w = RARITY_WEIGHTS_NOLR[rarity] || 0;
   return Math.round(totalArticles * w / WEIGHTS_NOLR_TOTAL);
 }
 
 async function updateRarityStats() {
   const total = await fetchWikiArticleCount();
-  // Count unique titles per rarity in deck
   const seen = {};
   deck.forEach(c => {
     const key = c.rarity + '::' + c.title;
@@ -1956,11 +1918,11 @@ async function updateRarityStats() {
   });
 }
 
-// ── DECK ───────────────────────────────────────────────────────────────
+// DECK (or dick of you so believe)
 function renderDeck() {
   const grid = document.getElementById('deck-grid');
   document.getElementById('deck-count').textContent = deck.length + ' cards';
-  updateRarityStats(); // async — updates bar chips in background
+  updateRarityStats();
 
   if (!deck.length) {
     grid.innerHTML = '<p class="empty">Pull some packs to start your collection!</p>';
@@ -1980,7 +1942,7 @@ function renderDeck() {
     return;
   }
 
-  // Count dupes across full deck
+  // Counts all the dupes across deck
   const dupeCounts = {};
   deck.forEach(c => { dupeCounts[c.title] = (dupeCounts[c.title]||0)+1; });
 
@@ -2034,7 +1996,7 @@ function quickFav(id, el) {
   el.classList.toggle('starred', c.favorite);
 }
 
-// ── CARD VIEWER MODAL ──────────────────────────────────────────────────
+// CARD VIEWER MODAL
 let modalCardId = null;
 
 function openModal(id) {
@@ -2054,9 +2016,9 @@ function openModal(id) {
   starBtn.textContent = c.favorite ? '⭐ Favorited' : '☆ Favorite';
   starBtn.classList.toggle('starred', !!c.favorite);
 
-  // Merge button — requires 2 OTHER cards of same rarity (3 total) to sacrifice
+  // Merge button
   const canMerge = deck.filter(d => d.rarity === c.rarity && d.id !== c.id).length >= 2
-    && c.rarity !== 'UR' && c.rarity !== 'LR'; // UR/LR can't be merged
+    && c.rarity !== 'UR' && c.rarity !== 'LR';
   const mergeBtn = document.getElementById('modal-merge-btn');
   mergeBtn.disabled = !canMerge;
   mergeBtn.title = !canMerge ? (c.rarity === 'UR' || c.rarity === 'LR' ? 'LR/UR cards cannot be merged' : 'Need 2 other cards of same rarity') : 'Merge with another card';
@@ -2073,37 +2035,35 @@ function closeModal(e) {
   modalCardId = null;
 }
 
-// ── FAVORITES ─────────────────────────────────────────────────────────
+// FAVES
 function toggleFavorite() {
   const c = deck.find(d => d.id == modalCardId);
   if (!c) return;
   c.favorite = !c.favorite;
   save();
-  // Update star button
   const starBtn = document.getElementById('modal-star-btn');
   starBtn.textContent = c.favorite ? '⭐ Favorited' : '☆ Favorite';
-  starBtn.classList.toggle('starred', c.favorite);
-  // Update the card in the modal
+  starBtn.classList.toggle('starred', c.favorite);al
   const wrap = document.getElementById('modal-card-wrap');
   wrap.innerHTML = cardHTML(c);
   const anchor = wrap.querySelector('a.card');
   if (anchor) { anchor.removeAttribute('href'); anchor.style.cursor = 'default'; }
 }
 
-// ── MERGE SYSTEM ──────────────────────────────────────────────────────
-const RARITY_ORDER = ['C','R','SR','SSR','UR']; // LR cards cannot be merged
-let mergeTargetIds = []; // the 2 cards we're sacrificing
+// MERGE SYSTEM
+const RARITY_ORDER = ['C','R','SR','SSR','UR'];
+let mergeTargetIds = []; // the 2 cards that get sacced and merged
 
 function openMergePanel() {
   const base = deck.find(d => d.id == modalCardId);
   if (!base) return;
 
-  // Close card modal first, open merge modal
+  // Closes card modal first, then opens merge modal
   document.getElementById('card-modal').style.display = 'none';
 
   mergeTargetIds = [];
 
-  // Show base card slot
+  // Show base card slot (?)
   document.getElementById('merge-slots').innerHTML = `
     <div style="text-align:center">
       <p style="font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Base Card</p>
@@ -2123,7 +2083,7 @@ function openMergePanel() {
     </div>
   `;
 
-  // Candidates: same rarity, different id — need to pick 2 to sacrifice
+  // Candidates allowing and disawllowing functions
   const candidates = deck.filter(d => d.rarity === base.rarity && d.id !== base.id);
 
   const container = document.getElementById('merge-candidates');
@@ -2147,15 +2107,13 @@ function openMergePanel() {
 function selectMergeCandidate(sacrificeId, baseId) {
   const idx = mergeTargetIds.indexOf(sacrificeId);
   if (idx >= 0) {
-    // Deselect if already chosen
     mergeTargetIds.splice(idx, 1);
     event.currentTarget.classList.remove('selected');
   } else if (mergeTargetIds.length < 2) {
     mergeTargetIds.push(sacrificeId);
     event.currentTarget.classList.add('selected');
   }
-
-  // Update sacrifice slot display
+  
   const slot = document.getElementById('merge-sacrifice-slot');
   if (mergeTargetIds.length === 0) {
     slot.innerHTML = 'Select 2 below';
@@ -2184,11 +2142,8 @@ function confirmMerge() {
   const base = deck.find(d => d.id == modalCardId);
   if (!base || mergeTargetIds.length < 2) return;
 
-  // Advance rarity
   const curIdx = RARITY_ORDER.indexOf(base.rarity);
   const nextRarity = RARITY_ORDER[Math.min(curIdx + 1, RARITY_ORDER.length - 1)];
-
-  // Stat boost: +10% (merge is expensive and rare)
   base.rarity     = nextRarity;
   base.atk        = Math.round(base.atk * 1.10);
   base.def        = Math.round(base.def * 1.10);
@@ -2197,7 +2152,7 @@ function confirmMerge() {
   base.merged     = true;
   base.mergeLevel = (base.mergeLevel || 0) + 1;
 
-  // Remove both sacrifice cards from deck
+  // Remove sacced cards so they dont continue to exist
   deck = deck.filter(d => !mergeTargetIds.includes(d.id));
   save();
 
@@ -2205,14 +2160,14 @@ function confirmMerge() {
   document.body.style.overflow = '';
   mergeTargetIds = [];
 
-  // Show result — reopen modal on merged card
+  // Shows result
   setTimeout(() => {
     openModal(base.id);
     renderDeck();
   }, 120);
 }
 
-// ── DEV: CLEANSE ──────────────────────────────────────────────────────
+// the cleanse button
 function cleanseCards() {
   if (!confirm('Wipe entire collection? This cannot be undone.')) return;
   deck = [];
@@ -2223,7 +2178,7 @@ function cleanseCards() {
 }
 
 
-// ── BATTLE SETUP ───────────────────────────────────────────────────────
+// Battle setup (TBD, WIP)
 function renderBattleSetup() {
   const grid = document.getElementById('fighter-grid');
   const btn  = document.getElementById('start-btn');
@@ -2249,7 +2204,7 @@ function selectFighter(id) {
   renderBattleSetup();
 }
 
-// ── BATTLE ENGINE ──────────────────────────────────────────────────────
+// battle engine (early attempt, WIP)
 async function startBattle() {
   if (!selected) return;
   const arena = document.getElementById('battle-arena');
@@ -2307,13 +2262,13 @@ function renderArena() {
       </div>
       <div class="battle-actions">
         ${!over ? `
-          <button class="battle-btn" onclick="act('attack')">⚔️ Attack</button>
-          <button class="battle-btn" onclick="act('special')">✨ Special</button>
-          <button class="battle-btn" onclick="act('defend')">🛡️ Defend</button>
+          <button class="battle-btn" onclick="act('attack')">Attack</button>
+          <button class="battle-btn" onclick="act('special')">Special</button>
+          <button class="battle-btn" onclick="act('defend')">Defend</button>
           <button class="battle-btn danger" onclick="endBattle()">✕ Forfeit</button>
         ` : `
-          <button class="battle-btn" onclick="endBattle()">🔄 New Battle</button>
-          <button class="battle-btn" onclick="switchTab('gacha', document.querySelectorAll('.tab')[0])">🎴 Pull More</button>
+          <button class="battle-btn" onclick="endBattle()">New Battle</button>
+          <button class="battle-btn" onclick="switchTab('gacha', document.querySelectorAll('.tab')[0])">Pull More</button>
         `}
       </div>
     </div>`;
@@ -2334,29 +2289,29 @@ function act(action) {
     const dmg  = crit ? Math.round(base * 1.9) : base;
     enemy.hp   = Math.max(0, enemy.hp - dmg);
     addLog(
-      crit ? `💥 CRITICAL HIT! ${player.title} strikes for ${dmg}!`
-           : `⚔️ ${player.title} attacks for ${dmg} damage.`,
+      crit ? `CRITICAL HIT! ${player.title} strikes for ${dmg}!`
+           : `${player.title} attacks for ${dmg} damage.`,
       crit ? 'log-crit' : 'log-hit'
     );
   } else if (action === 'special') {
     const dmg = Math.max(2, Math.round(player.atk * 1.8) - enemy.def);
     enemy.hp  = Math.max(0, enemy.hp - dmg);
-    addLog(`✨ ${player.title} unleashes a special for ${dmg} damage!`, 'log-crit');
+    addLog(`${player.title} unleashes a special for ${dmg} damage!`, 'log-crit');
   } else if (action === 'defend') {
     const heal = Math.round(player.def * 0.6 + 6 + Math.random() * 5);
     player.hp  = Math.min(player.maxHp, player.hp + heal);
-    addLog(`🛡️ ${player.title} braces and recovers ${heal} HP.`, 'log-heal');
+    addLog(`${player.title} braces and recovers ${heal} HP.`, 'log-heal');
   }
 
   if (enemy.hp > 0) {
     const eDef = action === 'defend' ? Math.round(player.def * 0.4) : Math.round(player.def * 0.75);
     const eDmg = Math.max(1, enemy.atk - eDef + Math.round((Math.random() - 0.3) * 10));
     player.hp  = Math.max(0, player.hp - eDmg);
-    addLog(`🔴 ${enemy.title} retaliates for ${eDmg}.`);
+    addLog(`${enemy.title} retaliates for ${eDmg}.`);
   }
 
-  if (enemy.hp <= 0)  { addLog(`🏆 Victory! ${enemy.title} defeated!`, 'log-end'); battle.over = true; }
-  else if (player.hp <= 0) { addLog(`💀 ${player.title} has fallen. Defeat.`, 'log-end'); battle.over = true; }
+  if (enemy.hp <= 0)  { addLog(`Victory! ${enemy.title} defeated!`, 'log-end'); battle.over = true; }
+  else if (player.hp <= 0) { addLog(`${player.title} has fallen. Defeat.`, 'log-end'); battle.over = true; }
 
   renderArena();
 }
@@ -2369,23 +2324,22 @@ function endBattle() {
   renderBattleSetup();
 }
 
-// ── METALLICSS ────────────────────────────────────────────────────────
+// metallic stuff i stole from someone elses repo
 let _metalModule = null;
 async function applyMetallicss() {
-  // Lazy-load the module once
   if (!_metalModule) {
     try {
       _metalModule = await import('https://cdn.jsdelivr.net/npm/metallicss/dist/metallicss.min.js');
     } catch(e) {
-      return; // CDN unavailable — graceful degradation
+      return;
     }
   }
   if (!_metalModule?.metallicss) return;
   document.querySelectorAll('.metallicss').forEach(el => _metalModule.metallicss(el));
 }
 
-// ── UR RIBBON ANIMATION ────────────────────────────────────────────────
-// ── RARITY ANIMATIONS ────────────────────────────────────────────────
+// UR RIBBON ANIMATION 
+// RARITY ANIMATION
 function playRarityAnimation(hue1, hue2, glowColor) {
   const overlay = document.getElementById('ur-overlay');
   const canvas  = document.getElementById('ur-canvas');
@@ -2397,7 +2351,7 @@ function playRarityAnimation(hue1, hue2, glowColor) {
   const cx  = canvas.width  / 2;
   const cy  = canvas.height / 2;
 
-  // Radial burst: rings that expand from center outward
+  // Radial rings that go on for way too long
   const rings = Array.from({length: 24}, (_, i) => ({
     r:      0,
     maxR:   Math.max(canvas.width, canvas.height) * (0.9 + Math.random() * 0.5),
@@ -2408,7 +2362,7 @@ function playRarityAnimation(hue1, hue2, glowColor) {
     delay:  i * 28,
   }));
 
-  // Sparkle particles radiating outward
+  // Sparkles (WIP) dont think they even appear tbh
   const sparks = Array.from({length: 60}, () => {
     const angle = Math.random() * Math.PI * 2;
     const speed = 4 + Math.random() * 10;
@@ -2416,14 +2370,13 @@ function playRarityAnimation(hue1, hue2, glowColor) {
              alpha: 1, size: 2+Math.random()*4, hue: hue1+(Math.random()-0.5)*30 };
   });
 
-  // Central bloom
+  // where the bloom originates from (center here)
   let bloom = 0;
   let frame = 0;
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Bloom glow at center
     if (bloom < 1) { bloom += 0.07; }
     const bR = bloom * 220;
     const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, bR);
@@ -2432,8 +2385,7 @@ function playRarityAnimation(hue1, hue2, glowColor) {
     bg.addColorStop(1,   glowColor.replace('A)', '0)'));
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Expanding rings
+    
     for (const ring of rings) {
       if (frame < ring.delay) continue;
       ring.r += ring.speed;
@@ -2450,7 +2402,6 @@ function playRarityAnimation(hue1, hue2, glowColor) {
       ctx.restore();
     }
 
-    // Sparks
     for (const s of sparks) {
       s.x += s.vx; s.y += s.vy;
       s.vx *= 0.97; s.vy *= 0.97;
@@ -2485,15 +2436,12 @@ function playRarityAnimation(hue1, hue2, glowColor) {
 }
 
 function playURAnimation() {
-  // Gold burst: hue ~42 (gold/yellow)
   playRarityAnimation(35, 55, 'hsla(45,100%,60%,A)');
 }
 
 function playLRAnimation() {
-  // Red burst: hue ~0-10 (crimson/red)
   playRarityAnimation(0, 15, 'hsla(5,100%,55%,A)');
 }
-
 
 </script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/metallicss/dist/metallicss.min.js" defer></script>
