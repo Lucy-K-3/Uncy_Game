@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uncyclo</title>
+<title>UnCycloGacha</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -511,6 +511,9 @@
   }
 
   /* Rarity gradients — metallic style */
+  /* Rarity frames — solid background-color so metallicss can read the tint.
+     The gradient lives on .card-inner (see below). --metal:neutral on all
+     means metallicss tints the canvas canvas with this exact color. */
   .card.rarity-C {
     background-color: #505050;
     box-shadow: 0 4px 18px rgba(0,0,0,0.55);
@@ -629,8 +632,8 @@
   /* Image area — grows to fill available space between header and stats */
   .card-image {
     width: 100%;
-    flex: 1 1 0;
-    min-height: 0;
+    flex: 1 1 0;      /* grow to fill, shrink if needed */
+    min-height: 0;    /* allow shrinking below content size */
     background: #161210;
     overflow: hidden;
     display: flex;
@@ -642,7 +645,7 @@
   .card-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover;     /* fills frame, crops if needed — no letterbox */
     object-position: center top;
     display: block;
   }
@@ -661,7 +664,9 @@
     -webkit-box-orient: vertical;
   }
 
-  /* Stats bar */
+  /* .card-flavour removed */
+
+  /* Stats bar — 3 columns now */
   .card-stats {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -705,6 +710,7 @@
     line-height: 1;
   }
 
+  /* Favorite star on card corner */
   .card-star {
     position: absolute;
     top: 2px;
@@ -719,6 +725,7 @@
 
   .card.favorited .card-star { display: block; }
 
+  /* Merge badge — shows duplicate count */
   .card-dupe-badge {
     position: absolute;
     bottom: 2px;
@@ -1069,7 +1076,7 @@
   .list-fav:hover   { opacity: 0.7; transform: scale(1.15); }
   .list-fav.starred { opacity: 1; }
 
-  /* MODAL */
+  /* ── MODAL ── */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -1088,7 +1095,7 @@
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    width: calc(var(--modal-card-w) + 10px);
+    width: 330px;
     flex-shrink: 0;
     animation: modalIn 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
@@ -1119,6 +1126,8 @@
 
   .modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
+  /* Card inside modal — full width, no animation, not clickable */
+  /* Card inside modal — fixed width, no animation, not clickable */
   .modal-box .card {
     width: var(--modal-card-w);
     min-width: var(--modal-card-w);
@@ -1158,7 +1167,7 @@
 
   .modal-link-btn:hover { background: var(--gold-lt); }
 
-  /* BATTLE WIP doesnt work rn*/
+  /* ── BATTLE ── */
   .fighter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -1306,14 +1315,14 @@
 <body>
 <div id="app">
   <header>
-    <h1>UncYclO</h1>
-    <p class="subtitle">Obtain all your favorites from your least favorite wiki!</p>
+    <h1>UnCycloGacha</h1>
+    <p class="subtitle">Pull cards from the depths of Uncyclopedia &mdash; the content-free encyclopedia</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('gacha',this)">Pull</button>
-    <button class="tab" onclick="switchTab('deck',this)">Collection</button>
-    <button class="tab" onclick="switchTab('battle',this)">Battle</button>
+    <button class="tab active" onclick="switchTab('gacha',this)">🎴 Pull</button>
+    <button class="tab" onclick="switchTab('deck',this)">📦 Collection</button>
+    <button class="tab" onclick="switchTab('battle',this)">⚔️ Battle</button>
   </div>
 
   <!-- PULL -->
@@ -1325,8 +1334,8 @@
         <div class="bag-pulse"></div>
         <img src="potato.webp" class="bag-svg" alt="Uncyclopedia Potato" draggable="false">
       </div>
-      <p class="bag-hint">Tap the Untato to pull 5 cards</p>
-      <button class="cleanse-btn" onclick="cleanseCards()">Delete Collection (DevOPS)</button>
+      <p class="bag-hint">Tap the potato to pull 5 cards</p>
+      <button class="cleanse-btn" onclick="cleanseCards()">🗑️ Cleanse Collection (Dev)</button>
     </div>
 
     <!-- State B: shaking/splitting potato loading screen -->
@@ -1335,7 +1344,7 @@
         <img src="potato.webp" class="potato-half potato-half-top" id="potato-top" alt="" draggable="false">
         <img src="potato.webp" class="potato-half potato-half-bottom" id="potato-bottom" alt="" draggable="false">
       </div>
-      <p class="potato-loading-text">Consulting Sophia...</p>
+      <p class="potato-loading-text">Yoinking cards...</p>
     </div>
 
     <!-- State C: card stack -->
@@ -1347,7 +1356,7 @@
         <button class="stack-arrow" id="stack-next" onclick="stackNav(1)">&#8250;</button>
       </div>
       <span class="stack-counter" id="stack-counter">1 / 5</span>
-      <button class="pull-btn" onclick="resetToIdle()" style="padding:10px 28px;font-size:14px">Back to Untato</button>
+      <button class="pull-btn" onclick="resetToIdle()" style="padding:10px 28px;font-size:14px">← Back to Untato</button>
     </div>
 
     <div id="pull-error" class="error" style="display:none"></div>
@@ -1403,7 +1412,7 @@
       </div>
       <div class="rarity-tabs">
         <button class="rtab active" onclick="setRarity('ALL',this)">All</button>
-        <button class="rtab fav"    onclick="setRarity('FAV',this)">Faves</button>
+        <button class="rtab fav"    onclick="setRarity('FAV',this)">⭐ Faves</button>
         <button class="rtab lr"     onclick="setRarity('LR',this)">LR</button>
         <button class="rtab ur"     onclick="setRarity('UR',this)">UR</button>
         <button class="rtab ssr"    onclick="setRarity('SSR',this)">SSR</button>
@@ -1428,11 +1437,11 @@
       <button class="modal-close" onclick="closeModal()">✕</button>
       <div id="modal-card-wrap"></div>
       <div class="modal-actions">
-        <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">Favorite</button>
-        <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">Merge</button>
+        <button class="modal-star-btn" id="modal-star-btn" onclick="toggleFavorite()">☆ Favorite</button>
+        <button class="modal-merge-btn" id="modal-merge-btn" onclick="openMergePanel()">⚗️ Merge</button>
       </div>
       <a id="modal-link" href="#" target="_blank" rel="noopener" class="modal-link-btn">
-        Open in Uncyclopedia
+        Open on Uncyclopedia ↗
       </a>
     </div>
   </div>
@@ -1442,7 +1451,7 @@
     <div class="modal-box" style="max-width:480px;width:90%">
       <button class="modal-close" onclick="closeMergeModal()">✕</button>
       <div style="width:100%">
-        <p style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);text-align:center;margin-bottom:4px">Merge Cards</p>
+        <p style="font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);text-align:center;margin-bottom:4px">⚗️ Merge Cards</p>
         <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:16px">Sacrifice 2 other cards of the same rarity — your base card advances one tier (+10% stats)</p>
         <div id="merge-slots" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:16px"></div>
         <div id="merge-candidates" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;max-height:260px;overflow-y:auto;padding:4px"></div>
@@ -1454,9 +1463,9 @@
   <!-- BATTLE -->
   <div id="screen-battle" class="screen">
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px;text-align:center;padding:40px 20px">
-      <div style="font-size:56px">BATTLE MODE RAHHH</div>
+      <div style="font-size:56px">⚔️</div>
       <p style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);letter-spacing:2px">Coming Soon</p>
-      <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6">Battle mode is trash rn. Pull some cards and come back when it's ready.</p>
+      <p style="font-size:14px;color:var(--muted);max-width:280px;line-height:1.6">Battle mode is under construction. Pull some cards and come back when it's ready.</p>
     </div>
   </div>
 </div>
@@ -1504,9 +1513,9 @@ async function fetchDetails(titles) {
   return Object.values(d.query.pages);
 }
 
-// CARD GENERATOR
+// ── CARD GENERATION ────────────────────────────────────────────────────
 const RARITIES  = [{t:'LR',w:0.05},{t:'UR',w:0.3},{t:'SSR',w:1.5},{t:'SR',w:8},{t:'R',w:25},{t:'C',w:65}];
-const LR_CARDS  = ['Oscar Wilde','Uncyclopedia','Sophia','Fisher Price'];
+const LR_CARDS  = ['Oscar Wilde','Uncyclopedia','Sophia','Fisher Price']; // the only LR cards
 const TYPES     = ['Meme','Stub','Satire','Parody','Nonsense','Propaganda','Vanity','Featured','Conspiracy','Absurdist'];
 const EMOJIS    = ['🐧','🤡','🎩','🌮','🦆','🎭','🏛️','📰','🚀','💀','🤖','🧀','👑','🎪','🦄','🐸','🦖','🍕','🌵','🔮','🦑','🛸','🧲','🏴‍☠️','🧸'];
 
@@ -1520,7 +1529,7 @@ function rollRarity() {
 function makeCard(page, forcedRarity) {
   let rarity = forcedRarity || rollRarity();
 
-  // LR cards have fixed titles
+  // LR cards have fixed titles — override the page if we rolled LR
   if (rarity === 'LR' && !LR_CARDS.includes(page?.title)) {
     const lrTitle = LR_CARDS[Math.floor(Math.random() * LR_CARDS.length)];
     page = { ...(page || {}), title: lrTitle, pageid: page?.pageid || Math.abs(lrTitle.charCodeAt(0) * 137) };
@@ -1552,9 +1561,9 @@ function makeCard(page, forcedRarity) {
   };
 }
 
-// GACHA SCREEN STATE 
-let stackCards  = [];
-let stackIndex  = 0;
+// ── GACHA SCREEN STATE ────────────────────────────────────────────────
+let stackCards  = [];   // current pull of 5 cards
+let stackIndex  = 0;    // which card is on top
 
 function showState(s) {
   document.getElementById('gacha-idle').style.display           = s === 'idle'  ? 'flex'  : 'none';
@@ -1572,7 +1581,7 @@ function resetToIdle() {
   showState('idle');
 }
 
-// UNTATO EXPLOSION (uhhhhhh might be a remnant actually)
+// ── BAG EXPLOSION ─────────────────────────────────────────────────────
 function playExplosion(onDone) {
   const canvas = document.getElementById('explode-stage');
   canvas.width  = window.innerWidth;
@@ -1580,7 +1589,7 @@ function playExplosion(onDone) {
   canvas.style.display = 'block';
   const ctx = canvas.getContext('2d');
 
-  // Find untato image position on screen to explode from its center
+  // Find potato image position on screen to explode from its center
   const potatoEl = document.querySelector('#bag-wrap img.bag-svg') || document.querySelector('.bag-wrap');
   const bagR  = potatoEl ? potatoEl.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2, width:0, height:0};
   const cx = bagR.left + bagR.width  / 2;
@@ -1606,7 +1615,7 @@ function playExplosion(onDone) {
     };
   });
 
-  // Yuge flash
+  // Big flash
   let flash = 1.0;
   let t = 0;
 
@@ -1624,7 +1633,7 @@ function playExplosion(onDone) {
     for (const p of particles) {
       p.x  += p.vx;
       p.y  += p.vy;
-      p.vy += 0.18; //fake gravity to make it feel real
+      p.vy += 0.18; // gravity
       p.vx *= 0.98;
       p.alpha -= 0.022;
       p.rot += p.rotV;
@@ -1656,8 +1665,9 @@ function playExplosion(onDone) {
   frame();
 }
 
-//  PACK OPENING ANIMATION
+// ── PACK OPENING ───────────────────────────────────────────────────────
 async function startPull() {
+  // Show shaking potato as loading screen
   showState('shake');
   const shakeWrap = document.getElementById('potato-shake-wrap');
   shakeWrap.classList.remove('splitting');
@@ -1670,7 +1680,7 @@ async function startPull() {
     const cards = randoms.map((r, i) => {
       const page = pages.find(p => p.title === r.title) || { title: r.title, pageid: r.id };
       let rarity = rollRarity();
-      if (i === 0 && rarity === 'C') rarity = 'R';
+      if (i === 0 && rarity === 'C') rarity = 'R'; // soft pity
       return makeCard(page, rarity);
     });
 
@@ -1679,7 +1689,7 @@ async function startPull() {
 
     // Cards ready — stop shaking, trigger the split
     shakeWrap.classList.remove('shaking');
-    void shakeWrap.offsetWidth;
+    void shakeWrap.offsetWidth; // force reflow so animation restarts
     shakeWrap.classList.add('splitting');
 
     const hasUR = cards.some(c => c.rarity === 'UR');
@@ -1712,20 +1722,24 @@ function buildStack() {
 
   // Render cards back-to-front (index 4 = back, 0 = front)
   for (let i = stackCards.length - 1; i >= 0; i--) {
-    const wrap = document.createElement('div');
-    wrap.className = 'stack-card-wrap';
-    wrap.dataset.idx = i;
-    wrap.innerHTML = cardHTML(stackCards[i]);
-    // Remove href so clicking card in stack doesn't navigate
-    const a = wrap.querySelector('a.card');
-    if (a) { a.removeAttribute('href'); a.style.cursor = 'default'; }
-    scene.appendChild(wrap);
-    attachDrag(wrap);
+    const outer = document.createElement('div');
+    outer.className = 'stack-card-wrap';
+    outer.dataset.idx = i;
+
+    const { wrap } = mtgCardElement(stackCards[i], 240);
+    wrap.style.position     = 'absolute';
+    wrap.style.top          = '50%';
+    wrap.style.left         = '50%';
+    wrap.style.transform    = 'translate(-50%, -50%)';
+    wrap.style.borderRadius = '10px';
+    wrap.style.boxShadow    = '0 8px 32px rgba(0,0,0,0.7)';
+    outer.appendChild(wrap);
+    scene.appendChild(outer);
+    attachDrag(outer);
   }
 
   updateStackPositions();
   updateStackCounter();
-  applyMetallicss();
 }
 
 function updateStackPositions() {
@@ -1799,6 +1813,201 @@ function attachDrag(wrap) {
   window.addEventListener('touchmove',  onMove, {passive: false});
   window.addEventListener('mouseup',  onUp);
   window.addEventListener('touchend', onUp);
+}
+
+// ── MTG CARD RENDERER ────────────────────────────────────────────────
+const MTG_FRAMES = {
+  LR:  'frame_LR.png',
+  UR:  'frame_UR.png',
+  SSR: 'frame_SSR.png',
+  SR:  'frame_SR.png',
+  R:   'frame_R.png',
+  C:   'frame_C.png',
+};
+
+// Preload frame images once
+const _frameCache = {};
+function loadFrame(rarity) {
+  if (_frameCache[rarity]) return _frameCache[rarity];
+  const img = new Image();
+  img.src = MTG_FRAMES[rarity] || MTG_FRAMES['C'];
+  _frameCache[rarity] = img;
+  return img;
+}
+// Kick off all preloads immediately
+Object.keys(MTG_FRAMES).forEach(loadFrame);
+
+// Layout constants (native 502×703)
+const MTG = {
+  W: 502, H: 703,
+  // Art box
+  ART_X: 38, ART_Y: 78, ART_W: 427, ART_H: 314,
+  // Title bar text area
+  TITLE_X: 52, TITLE_Y: 20, TITLE_W: 398, TITLE_H: 58,
+  // Type band
+  TYPE_X: 52, TYPE_Y: 396, TYPE_W: 398, TYPE_H: 40,
+  // Text box
+  TEXT_X: 50, TEXT_Y: 448, TEXT_W: 402, TEXT_H: 196,
+  // Stats row (inside text box, bottom section)
+  STAT_Y: 620, STAT_H: 28,
+};
+
+// Text color per rarity for title
+const MTG_TITLE_COLOR = {
+  LR: '#fff',  UR: '#2a1800', SSR: '#e0d0ff',
+  SR: '#001830', R: '#001a00', C: '#1a1a1a',
+};
+const MTG_TYPE_COLOR = {
+  LR: '#fff',  UR: '#2a1800', SSR: '#d0c0ff',
+  SR: '#001830', R: '#001a00', C: '#1a1a1a',
+};
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '', lines = [];
+  for (const word of words) {
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+  return lines.length;
+}
+
+function renderMTGCard(c, canvas) {
+  const ctx = canvas.getContext('2d');
+  const W = MTG.W, H = MTG.H;
+  canvas.width  = W;
+  canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  const frame = loadFrame(c.rarity);
+
+  function drawAll(artImg) {
+    // 1. Draw art image into art box (behind frame)
+    if (artImg) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(MTG.ART_X, MTG.ART_Y, MTG.ART_W, MTG.ART_H);
+      ctx.clip();
+      // cover fit
+      const scale = Math.max(MTG.ART_W / artImg.naturalWidth, MTG.ART_H / artImg.naturalHeight);
+      const dw = artImg.naturalWidth * scale, dh = artImg.naturalHeight * scale;
+      const dx = MTG.ART_X + (MTG.ART_W - dw) / 2;
+      const dy = MTG.ART_Y + (MTG.ART_H - dh) / 2;
+      ctx.drawImage(artImg, dx, dy, dw, dh);
+      ctx.restore();
+    }
+
+    // 2. Draw frame on top
+    if (frame.complete && frame.naturalWidth) {
+      ctx.drawImage(frame, 0, 0, W, H);
+    } else {
+      frame.onload = () => { ctx.drawImage(frame, 0, 0, W, H); drawText(); };
+      return;
+    }
+    drawText();
+  }
+
+  function drawText() {
+    const titleColor = MTG_TITLE_COLOR[c.rarity] || '#111';
+    const typeColor  = MTG_TYPE_COLOR[c.rarity]  || '#111';
+
+    // ── Title ──
+    ctx.save();
+    ctx.font = 'bold 22px "Barlow Condensed", sans-serif';
+    ctx.fillStyle = titleColor;
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 3;
+    // Scale font down if title is too wide
+    let fontSize = 22;
+    while (ctx.measureText(c.title).width > MTG.TITLE_W - 8 && fontSize > 10) {
+      fontSize--;
+      ctx.font = `bold ${fontSize}px "Barlow Condensed", sans-serif`;
+    }
+    ctx.fillText(c.title, MTG.TITLE_X + 4, MTG.TITLE_Y + MTG.TITLE_H / 2);
+    ctx.restore();
+
+    // ── Type line ──
+    ctx.save();
+    ctx.font = 'bold 14px "Barlow Condensed", sans-serif';
+    ctx.fillStyle = typeColor;
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur = 2;
+    ctx.fillText(c.rarity + ' · ' + c.type, MTG.TYPE_X + 4, MTG.TYPE_Y + MTG.TYPE_H / 2);
+    ctx.restore();
+
+    // ── Body text (excerpt) ──
+    ctx.save();
+    ctx.font = '13px "Barlow Condensed", sans-serif';
+    ctx.fillStyle = '#111';
+    ctx.textBaseline = 'top';
+    const excerpt = (c.extract || '').slice(0, 280);
+    const linesUsed = wrapText(ctx, excerpt || 'No text available.', MTG.TEXT_X + 4, MTG.TEXT_Y, MTG.TEXT_W - 8, 17);
+    ctx.restore();
+
+    // ── Stats bar ──
+    const statY = Math.min(MTG.TEXT_Y + linesUsed * 17 + 10, MTG.STAT_Y);
+    ctx.save();
+    ctx.font = 'bold 15px "Barlow Condensed", sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.shadowBlur = 0;
+
+    const stats = [
+      { label: 'ATK', val: c.atk, color: '#c0200a' },
+      { label: 'DEF', val: c.def, color: '#1050c0' },
+      { label: 'HP',  val: c.hp,  color: '#107030' },
+    ];
+    const sw = MTG.TEXT_W / 3;
+    stats.forEach((s, i) => {
+      const sx = MTG.TEXT_X + i * sw;
+      ctx.fillStyle = s.color;
+      ctx.font = 'bold 13px "Barlow Condensed", sans-serif';
+      ctx.fillText(s.label, sx + 4, statY);
+      ctx.fillStyle = '#111';
+      ctx.font = 'bold 18px "Barlow Condensed", sans-serif';
+      ctx.fillText(s.val, sx + 4, statY + 15);
+    });
+    ctx.restore();
+  }
+
+  // Load art image
+  if (c.thumb) {
+    const artImg = new Image();
+    artImg.crossOrigin = 'anonymous';
+    artImg.onload  = () => drawAll(artImg);
+    artImg.onerror = () => drawAll(null);
+    artImg.src = c.thumb;
+  } else {
+    // Use potato as placeholder
+    const potato = new Image();
+    potato.onload  = () => drawAll(potato);
+    potato.onerror = () => drawAll(null);
+    potato.src = 'potato.webp';
+  }
+}
+
+// Build an MTG card element (returns a <canvas> wrapped in a div)
+function mtgCardElement(c, displayWidth) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `
+    position:relative; display:inline-block; cursor:pointer;
+    width:${displayWidth}px;
+    height:${Math.round(displayWidth * 703/502)}px;
+    flex-shrink:0;
+  `;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = `width:100%;height:100%;display:block;border-radius:6px;`;
+  wrap.appendChild(canvas);
+  renderMTGCard(c, canvas);
+  return { wrap, canvas };
 }
 
 function cardHTML(c) {
@@ -2033,9 +2242,9 @@ function openModal(id) {
   modalCardId = c.id;
 
   const wrap = document.getElementById('modal-card-wrap');
-  wrap.innerHTML = cardHTML(c);
-  const anchor = wrap.querySelector('a.card');
-  if (anchor) { anchor.removeAttribute('href'); anchor.style.cursor = 'default'; }
+  wrap.innerHTML = '';
+  const { wrap: mtgWrap } = mtgCardElement(c, 310);
+  wrap.appendChild(mtgWrap);
 
   document.getElementById('modal-link').href = c.url;
 
@@ -2053,7 +2262,6 @@ function openModal(id) {
 
   document.getElementById('card-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  applyMetallicss();
 }
 
 function closeModal(e) {
@@ -2075,9 +2283,9 @@ function toggleFavorite() {
   starBtn.classList.toggle('starred', c.favorite);
   // Update the card in the modal
   const wrap = document.getElementById('modal-card-wrap');
-  wrap.innerHTML = cardHTML(c);
-  const anchor = wrap.querySelector('a.card');
-  if (anchor) { anchor.removeAttribute('href'); anchor.style.cursor = 'default'; }
+  wrap.innerHTML = '';
+  const { wrap: mtgWrap } = mtgCardElement(c, 310);
+  wrap.appendChild(mtgWrap);
 }
 
 // ── MERGE SYSTEM ──────────────────────────────────────────────────────
